@@ -1,0 +1,29 @@
+
+allLists
+
+    tdList
+        tdItem
+        tdItem
+        ...
+
+    tdList
+        tdItem
+        tdItem
+        ...
+
+allLists
+    array of tdLists
+
+tdList
+    name
+    description
+    dateCreated
+
+    array of tdItems
+    completed
+
+tdItem
+    name
+    description
+    dateCreated
+
