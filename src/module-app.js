@@ -61,7 +61,7 @@ const App = (function() {
     function addItemClickEvent(newDiv, id) {
         newDiv.addEventListener('click', function() {
             console.log(`Current list = ${toDoList.currentList.title}`);
-            console.log(`Clicked id = ${id}`);
+            console.log(`Clicked item id = ${id}`);
             const item = toDoList.currentList.getItemWithId(id);
             console.log(`Item ${item.title} selected`);
         });
