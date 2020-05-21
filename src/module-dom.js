@@ -34,6 +34,7 @@ const Dom = (function() {
         const newDivItem = document.createElement('div');
         newDivItem.classList.add('item-element');
         itemsDiv.appendChild(newDivItem);
+        App.addItemClickEvent(newDivItem, details.id);
 
         // Item display sections
         const newDivTitle = document.createElement('div');

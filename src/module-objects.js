@@ -24,7 +24,7 @@ const Mob = (function() {
             console.log(`Unselect ${this.currentList.title}`);
             this.currentList.selected = false;
             this.currentList = newList;
-            console.log(`Select ${this.currentList.title}`);
+            console.log(`Selected ${this.currentList.title}`);
             this.currentList.selected = true;
         }
     }
@@ -52,6 +52,16 @@ const Mob = (function() {
             selected: this.selected,
             id: this.id
         }; // needs object format
+    }
+
+    List.prototype.getItemWithId = function(id) {
+        for (let i = 0; i != this.items.length; i++) {
+            if (this.items[i].id === id) {
+                console.log(`Found item ${this.items[i].title}`);
+                return this.items[i];
+            }
+        }
+        return false;
     }
 
 // -------------------------------------------------------------------------- //

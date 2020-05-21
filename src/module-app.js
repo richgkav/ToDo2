@@ -23,8 +23,6 @@ const App = (function() {
         }
     }
 
-    // display all items in the currently selected list
-
     function displayItems() {
 
         if (toDoList !== undefined) {
@@ -60,12 +58,20 @@ const App = (function() {
         });
     }
 
+    function addItemClickEvent(newDiv, id) {
+        newDiv.addEventListener('click', function() {
+            console.log(`Current list = ${toDoList.currentList.title}`);
+            console.log(`Clicked id = ${id}`);
+            const item = toDoList.currentList.getItemWithId(id);
+            console.log(`Item ${item.title} selected`);
+        });
+    }
+
     return {
         display,
-        //displayLists,
-        //displayItems,
         setToDoList,
-        addListClickEvent
+        addListClickEvent,
+        addItemClickEvent
     }
 
 })();

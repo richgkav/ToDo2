@@ -8,7 +8,7 @@ function main() {
 
     // allLists is set to an instance of AllLists
     const allLists = Test.createData();
-    Test.dumpData();
+    //Test.dumpData();
 
     // set the current list for testing purposes
 
