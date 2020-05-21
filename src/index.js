@@ -6,13 +6,19 @@ window.onload = main;
 
 function main() {
 
-    const toDoList = Test.createData();
+    // allLists is set to an instance of AllLists
+    const allLists = Test.createData();
+    //Test.dumpData();
 
-    // force the current list for testing purposes
-    toDoList.currentList = toDoList.lists[0];
+    // set the current list for testing purposes
 
-    // display the current data
-    App.setToDoList(toDoList);
-    App.displayLists();
-    App.displayItems();
+    //allLists.currentList = allLists.lists[0];
+
+    // Set the App object to use toDoList. This allows for the toDoList to be set
+    // to something else easily (loading and saving?)
+
+    App.setToDoList(allLists);
+
+    App.display();
+ 
 }

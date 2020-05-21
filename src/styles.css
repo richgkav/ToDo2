@@ -15,11 +15,15 @@ body {
     background-color: darkgreen;
 }
 
-#main-div {
+#main-div, #menu-bar{
     width: 100%;
     height: auto;
     display: grid;
     grid-template-columns: 1fr 4fr;
+}
+
+#menu-bar>div {
+    margin: 5px;
 }
 
 #lists-container {
@@ -31,7 +35,10 @@ body {
 
 .list-element {
     background-color: darkgrey;
-    margin: 5px;
+    padding: 5px;
+    border-style: solid;
+    border-width: 1px;
+
 }
 
 #items-container {
@@ -42,6 +49,13 @@ body {
 }
 
 .item-element {
+    display: grid;
+    grid-template-columns: 4fr 1fr 1fr 1fr;
     background-color: rgb(192, 0, 192);
-    margin: 5px;
+}
+
+.item-element>div {
+    border-style: solid;
+    border-width: 1px;
+    padding: 5px;
 }

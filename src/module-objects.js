@@ -22,9 +22,13 @@ const Mob = (function() {
     List.prototype.title = "";
     List.prototype.description = "";
     List.prototype.dateCreated = new Date();
+    List.prototype.selected = false;
 
     List.prototype.renderProperties = function() {
-        return {title: this.title}; // needs object format
+        return {
+            title: this.title,
+            selected: this.selected
+        }; // needs object format
     }
 
 // -------------------------------------------------------------------------- //
@@ -32,8 +36,8 @@ const Mob = (function() {
 
         this.dateDue = (_addDays(new Date(), 28));
         this.priority = 2;
-        this.complete = false;
-        this.selected = false;
+        this.completed = false;
+        //this.selected = false;
     }
 
     // Set Item prototype to List prototype ("inherit" properties)
@@ -41,11 +45,11 @@ const Mob = (function() {
     // fix constructor back to Item as above instruction sets it to List
     Item.prototype.constructor = Item;
 
-    Item.prototype.renderProperties = function () {
+    Item.prototype.renderPropertiesList = function () {
         return {
             title: this.title,
+            priority: this.priority,
             completed: this.completed,
-            dateCreated: this.dateDue,
             selected: this.selected
         }
     }
