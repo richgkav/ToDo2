@@ -5,7 +5,7 @@ import {Dom} from "./module-dom"
 
 const App = (function() {
 
-    let toDoList = undefined;
+    let toDoList = undefined;       // this is the currently active to do list, use this to get reference to all the todo objects
 
     // Use to refresh everything on display
     function display() {
@@ -51,13 +51,14 @@ const App = (function() {
         }
     }
 
-    function addListClickEvent(newDiv) {
+    function addListClickEvent(newDiv, id) {
         newDiv.addEventListener('click', function() {
-            console.log(newDiv.innerHTML);
+            const list = toDoList.getListWithId(id);
+            toDoList.setCurrentList(list);
+            displayLists();
+            displayItems();
         });
     }
-
-
 
     return {
         display,

@@ -4,18 +4,40 @@ const Mob = (function() {
 
         this.lists = new Array();
         this.currentList = null;
+        this.listCounter = 0;           // each list has unique number
 
         this.addList = function(list) {
+            list.id = this.listCounter++;
             this.lists.push(list);
         };
+
+        this.getListWithId = function(id) {
+            for (let i = 0; i != this.lists.length; i++) {
+                if (this.lists[i].id === id) {
+                    return this.lists[i];
+                }
+            }
+            return false;
+        }
+
+        this.setCurrentList = function (newList) {
+            console.log(`Unselect ${this.currentList.title}`);
+            this.currentList.selected = false;
+            this.currentList = newList;
+            console.log(`Select ${this.currentList.title}`);
+            this.currentList.selected = true;
+        }
     }
 
 // -------------------------------------------------------------------------- //
     function List() {
         this.items = [];
+        this.id = undefined;            // generated from AllLists.listCounter
+        this.itemCounter = 0;           // each item has unique number
 
         this.addItem = function(item) {
-           this.items.push(item);
+            item.id = this.itemCounter++;
+            this.items.push(item);
         };
     }
 
@@ -27,7 +49,8 @@ const Mob = (function() {
     List.prototype.renderProperties = function() {
         return {
             title: this.title,
-            selected: this.selected
+            selected: this.selected,
+            id: this.id
         }; // needs object format
     }
 
@@ -37,7 +60,7 @@ const Mob = (function() {
         this.dateDue = (_addDays(new Date(), 28));
         this.priority = 2;
         this.completed = false;
-        //this.selected = false;
+        this.id = undefined;
     }
 
     // Set Item prototype to List prototype ("inherit" properties)
@@ -50,7 +73,8 @@ const Mob = (function() {
             title: this.title,
             priority: this.priority,
             completed: this.completed,
-            selected: this.selected
+            selected: this.selected,
+            id: this.id
         }
     }
 

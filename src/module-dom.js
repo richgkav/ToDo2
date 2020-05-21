@@ -15,8 +15,8 @@ const Dom = (function() {
             newDiv.style.backgroundColor = "darkred";
         }
 
-        App.addListClickEvent(newDiv);
-        
+        App.addListClickEvent(newDiv, details.id);
+
         listsDiv.appendChild(newDiv);
     }
 
