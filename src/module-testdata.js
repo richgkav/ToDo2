@@ -32,6 +32,8 @@ const Test = (function(){
         item3.description = "Here is something to do in the other list";
         anotherList.addItem(item3);
 
+        //allLists.currentList.currentItem = item1;
+
         return allLists;
     }
 

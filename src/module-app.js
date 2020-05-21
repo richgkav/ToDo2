@@ -11,6 +11,8 @@ const App = (function() {
     function display() {
         displayLists();
         displayItems();
+        Dom.renderListsFunctions(); // buttons under lists
+        Dom.renderItemsFunctions(); // and items
     }
 
     function displayLists() {
@@ -50,28 +52,86 @@ const App = (function() {
     }
 
     function addListClickEvent(newDiv, id) {
+
         newDiv.addEventListener('click', function() {
+
             const list = toDoList.getListWithId(id);
             toDoList.setCurrentList(list);
             displayLists();
             displayItems();
+
         });
     }
 
     function addItemClickEvent(newDiv, id) {
         newDiv.addEventListener('click', function() {
-            console.log(`Current list = ${toDoList.currentList.title}`);
-            console.log(`Clicked item id = ${id}`);
+
+// add code to go into the item editor
+
+            //console.log(`Current list = ${toDoList.currentList.title}`);
+            //console.log(`Clicked item id = ${id}`);
             const item = toDoList.currentList.getItemWithId(id);
-            console.log(`Item ${item.title} selected`);
+            console.log(`Edit item ${item.title} clicked`);
         });
     }
+
+    function addItemCompleteClickEvent(newDiv, id) {
+
+        newDiv.addEventListener('click', function() {
+
+            const item = toDoList.currentList.getItemWithId(id);
+
+            if (item.completed) {
+                item.completed = false;
+            }
+            else {
+                item.completed = true;
+            }
+
+            displayItems();
+        });
+    }
+
+    function addItemPriorityClickEvent(newDiv, id) {
+        newDiv.addEventListener('click', function() {
+            const item = toDoList.currentList.getItemWithId(id);
+            item.priority += 1;
+            if (item.priority === 4) item.priority = 1;
+            displayItems();
+        });
+    }
+
+    function addNewFolderClickEvent(newDiv) {
+        newDiv.addEventListener('click', function() {
+            const newList = new Mob.List();
+            newList.title = "A new folder";
+            newList.description = "Adding a new folder";
+            toDoList.addList(newList);
+            displayLists();
+            displayItems();
+        });
+    }
+
+    function addNewItemClickEvent(newDiv) {
+        newDiv.addEventListener('click', function() {
+            const newItem = new Mob.Item();
+            newItem.title = "New item test";
+            newItem.description = "Bla bla bla";
+            toDoList.currentList.addItem(newItem);
+            displayItems();
+        });
+    }
+
 
     return {
         display,
         setToDoList,
         addListClickEvent,
-        addItemClickEvent
+        addItemClickEvent,
+        addItemCompleteClickEvent,
+        addItemPriorityClickEvent,
+        addNewFolderClickEvent,
+        addNewItemClickEvent
     }
 
 })();

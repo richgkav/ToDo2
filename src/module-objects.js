@@ -21,19 +21,22 @@ const Mob = (function() {
         }
 
         this.setCurrentList = function (newList) {
-            console.log(`Unselect ${this.currentList.title}`);
+            //console.log(`Unselect ${this.currentList.title}`);
             this.currentList.selected = false;
             this.currentList = newList;
-            console.log(`Selected ${this.currentList.title}`);
+            //console.log(`Selected ${this.currentList.title}`);
             this.currentList.selected = true;
         }
     }
 
 // -------------------------------------------------------------------------- //
+// id is used to refer to the correct List or Item object after a click event
+
     function List() {
         this.items = [];
         this.id = undefined;            // generated from AllLists.listCounter
         this.itemCounter = 0;           // each item has unique number
+        this.currentItem = undefined;
 
         this.addItem = function(item) {
             item.id = this.itemCounter++;
@@ -57,7 +60,6 @@ const Mob = (function() {
     List.prototype.getItemWithId = function(id) {
         for (let i = 0; i != this.items.length; i++) {
             if (this.items[i].id === id) {
-                console.log(`Found item ${this.items[i].title}`);
                 return this.items[i];
             }
         }
@@ -83,7 +85,6 @@ const Mob = (function() {
             title: this.title,
             priority: this.priority,
             completed: this.completed,
-            selected: this.selected,
             id: this.id
         }
     }
