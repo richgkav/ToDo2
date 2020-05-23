@@ -37,10 +37,13 @@ body {
     padding: 5px;
 }
 
-#lists-container {
-    height: auto;
+#list-container, #items-container {
     display: flex;
     flex-direction: column;
+}
+
+#lists-container {
+    height: auto;
     background-color: darkslateblue;
 }
 
@@ -49,13 +52,10 @@ body {
     padding: 5px;
     border-style: solid;
     border-width: 1px;
-
 }
 
 #items-container {
     height: auto;
-    display: flex;
-    flex-direction: column;
     background-color: darkmagenta;
 }
 
@@ -71,16 +71,16 @@ body {
     padding: 5px;
 }
 
-#lists-functions>div {
-    width: fit-content;
-    padding: 5px;
-    border-style: solid;
-    border-width: 1px;
+#lists-functions, #items-functions {
+    display: flex;
+    flex-direction: row;
+    justify-content: start;
 }
 
-#items-functions>div {
+#lists-functions>div, #items-functions>div, .buttons {
     width: fit-content;
     padding: 5px;
     border-style: solid;
-    border-width: 1px;
+    border-width: 1px;  
+    margin-left: 5px;
 }

@@ -4,6 +4,61 @@ const Dom = (function() {
 
     // Dom functions called by module-application
 
+    function renderMenuBarDivs() {
+        // Renders the div elements for the main display
+        const contentDiv = getDiv('content');
+        const menuBarDiv = newDiv('menu-bar');
+        const listsMenuDiv = newDiv('lists-menu');
+        const itemsMenuDiv = newDiv('items-menu');
+        const menuH2 = newH2('Menu');
+        const itemsH2 = newH2('Items');
+        const priorityH2 = newH2('Priority');
+        const completedH2 = newH2('Completed');
+        contentDiv.appendChild(menuBarDiv);
+        menuBarDiv.appendChild(listsMenuDiv);
+        listsMenuDiv.appendChild(menuH2);
+        menuBarDiv.appendChild(itemsMenuDiv);
+        itemsMenuDiv.appendChild(itemsH2);
+        itemsMenuDiv.appendChild(priorityH2);
+        itemsMenuDiv.appendChild(completedH2);
+    }
+    
+    function renderMainDivs() {
+        const contentDiv = getDiv('content');
+        const mainDiv = newDiv('main-div');
+        const listsContainerDiv = newDiv('lists-container');
+        const itemsContainerDiv = newDiv('items-container');
+        contentDiv.appendChild(mainDiv);
+        mainDiv.appendChild(listsContainerDiv);
+        mainDiv.appendChild(itemsContainerDiv);
+    }
+
+    function renderFunctionBarDivs() {
+        const contentDiv = getDiv('content');
+        const functionDiv = newDiv('function-div');
+        const listsFuncDiv = newDiv('lists-functions');
+        const itemsFuncDiv = newDiv('items-functions');
+        contentDiv.appendChild(functionDiv);
+        functionDiv.appendChild(listsFuncDiv);
+        functionDiv.appendChild(itemsFuncDiv);
+    }
+
+    function newDiv(idName, innerHTML) {
+        const newDiv = document.createElement('div');
+        if (idName) newDiv.id = idName;
+        if (innerHTML) newDiv.innerHTML = innerHTML;
+        return newDiv;
+    }
+
+    function getDiv(idName) {
+        return document.getElementById(idName);
+    }
+
+    function newH2(text) {
+        const newH2 = document.createElement('H2');
+        if (text) newH2.innerHTML = text;
+        return newH2;
+    }
     // render one List into #lists-div
 
     function renderList(details) {
@@ -44,7 +99,7 @@ const Dom = (function() {
         const newDivTitle = document.createElement('div');
         newDivTitle.innerHTML = details.title;
         newDivItem.appendChild(newDivTitle);
-        App.addItemClickEvent(newDivTitle, details.id);
+        App.addEditItemClickEvent(newDivTitle, details.id);
 
         const newDivPriority = document.createElement('div');
         newDivPriority.innerHTML = details.priority;
@@ -63,20 +118,69 @@ const Dom = (function() {
         clearChildElements(itemsDiv); 
     }
 
+    function clearContent() {
+        const contentDiv = document.getElementById('content');
+        clearChildElements(contentDiv);
+        return contentDiv;
+    }
+
     function renderListsFunctions() {
-        const listsFunctions = document.getElementById('lists-functions');
-        const newDivAddList = document.createElement('div');
-        newDivAddList.innerHTML = "Add Folder";
+        const listsFunctions = getDiv('lists-functions');
+
+        const newDivAddList = newDiv(null, 'Add List');
         listsFunctions.appendChild(newDivAddList);
         App.addNewFolderClickEvent(newDivAddList);
+
+        const newDivDelList = newDiv(null, 'Delete List');
+        listsFunctions.appendChild(newDivDelList);
+        App.deleteFolderClickEvent(newDivDelList);
     }
 
     function renderItemsFunctions() {
         const itemsFunctions = document.getElementById('items-functions');
-        const newDivAddItem = document.createElement('div');
-        newDivAddItem.innerHTML = "Add Item";
+
+        const newDivAddItem = newDiv(null, 'Add Item');
         itemsFunctions.appendChild(newDivAddItem);
         App.addNewItemClickEvent(newDivAddItem);
+    }
+
+    function renderItemEditor(renProp) {
+
+        console.log(renProp);
+        const contentDiv = clearContent();
+        const formDiv = newDiv();
+
+        const title = renderLabelInput('Title', 'item-title', renProp.title);
+        const description = renderLabelInput('Description', 'item-description', renProp.description);
+
+        const buttonSubmit = newDiv();
+        buttonSubmit.classList.add('buttons');
+        buttonSubmit.innerHTML = 'Submit';
+        App.editItemSubmitEvent(buttonSubmit);
+
+        formDiv.appendChild(title.label);
+        formDiv.appendChild(title.input);
+        formDiv.appendChild(description.label);
+        formDiv.appendChild(description.input);
+        formDiv.appendChild(buttonSubmit);
+
+        contentDiv.appendChild(formDiv);
+    }
+
+    function renderLabelInput(text, field, value) {
+        const label = document.createElement('label');
+        label.setAttribute('for', field);
+        label.innerHTML = text;
+        const input = document.createElement('input');
+        input.setAttribute('type', 'text');
+        input.setAttribute('name', field);
+        input.id = field;
+        input.value = value;
+
+        return {
+            label,
+            input
+        }
     }
 
     return {
@@ -84,8 +188,13 @@ const Dom = (function() {
         clearList,
         renderItem,
         clearItems,
+        clearContent,
         renderListsFunctions,
-        renderItemsFunctions
+        renderItemsFunctions,
+        renderMenuBarDivs,
+        renderFunctionBarDivs,
+        renderMainDivs,
+        renderItemEditor
     }
 
 // -------------------------------------------------------------------------- //

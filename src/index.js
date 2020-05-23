@@ -19,6 +19,8 @@ function main() {
 
     App.setToDoList(allLists);
 
+    App.setupElementsForMain();
+    
     App.display();
  
 }

@@ -4,7 +4,7 @@ const Mob = (function() {
 
         this.lists = new Array();
         this.currentList = null;
-        this.listCounter = 0;           // each list has unique number
+        this.listCounter = 0;           // each list has unique number but might not be the array index
 
         this.addList = function(list) {
             list.id = this.listCounter++;
@@ -83,9 +83,12 @@ const Mob = (function() {
     Item.prototype.renderPropertiesList = function () {
         return {
             title: this.title,
+            description: this.description,
             priority: this.priority,
             completed: this.completed,
-            id: this.id
+            id: this.id,
+            dateCreated: this.dateCreated,
+            dateDue: this.dateDue
         }
     }
 
