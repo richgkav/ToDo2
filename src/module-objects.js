@@ -80,18 +80,6 @@ const Mob = (function() {
     // fix constructor back to Item as above instruction sets it to List
     Item.prototype.constructor = Item;
 
-    Item.prototype.renderPropertiesList = function () {
-        return {
-            title: this.title,
-            description: this.description,
-            priority: this.priority,
-            completed: this.completed,
-            id: this.id,
-            dateCreated: this.dateCreated,
-            dateDue: this.dateDue
-        }
-    }
-
 // -------------------------------------------------------------------------- //
     function _addDays(date, days) {
         var result = new Date(date);

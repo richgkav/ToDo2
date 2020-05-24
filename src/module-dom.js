@@ -82,7 +82,7 @@ const Dom = (function() {
 
     // render one Item into #items-div
 
-    function renderItem(details) {
+    function renderItem(item) {
 
         const itemsDiv = document.getElementById('items-container');
 
@@ -91,25 +91,25 @@ const Dom = (function() {
         newDivItem.classList.add('item-element');
         itemsDiv.appendChild(newDivItem);
 
-        if (details.completed) {
+        if (item.completed) {
             newDivItem.style.backgroundColor = "darkred";
         }
 
         // Item display sections
         const newDivTitle = document.createElement('div');
-        newDivTitle.innerHTML = details.title;
+        newDivTitle.innerHTML = item.title;
         newDivItem.appendChild(newDivTitle);
-        App.addEditItemClickEvent(newDivTitle, details.id);
+        App.addEditItemClickEvent(newDivTitle, item.id);
 
         const newDivPriority = document.createElement('div');
-        newDivPriority.innerHTML = details.priority;
+        newDivPriority.innerHTML = item.priority;
         newDivItem.appendChild(newDivPriority);
-        App.addItemPriorityClickEvent(newDivPriority, details.id);
+        App.addItemPriorityClickEvent(newDivPriority, item.id);
 
         const newDivCompleted = document.createElement('div');
-        newDivCompleted.innerHTML = details.completed;
+        newDivCompleted.innerHTML = item.completed;
         newDivItem.appendChild(newDivCompleted);
-        App.addItemCompleteClickEvent(newDivCompleted, details.id);
+        App.addItemCompleteClickEvent(newDivCompleted, item.id);
 
     }
 
@@ -144,26 +144,42 @@ const Dom = (function() {
         App.addNewItemClickEvent(newDivAddItem);
     }
 
-    function renderItemEditor(renProp) {
+    function renderItemEditor(item) {
 
-        console.log(renProp);
+        //console.log(renProp);
         const contentDiv = clearContent();
         const formDiv = newDiv();
 
-        const title = renderLabelInput('Title', 'item-title', renProp.title);
-        const description = renderLabelInput('Description', 'item-description', renProp.description);
+        const title = renderLabelInput('Title', 'item-title', item.title);
+        const description = renderLabelInput('Description', 'item-description', item.description);
+        
+        // -------------------------
+        const dateLabel = document.createElement('label');
+        dateLabel.setAttribute('for', 'due-date');
+        dateLabel.innerHTML = 'Due Date';
+        const dateInput = document.createElement('input');
+        dateInput.setAttribute('type', 'date');
+        dateInput.setAttribute('name', 'due-date');
+
+        let date = item.dateDue.toLocaleDateString('en-UK', { year: 'numeric', month: '2-digit', day: '2-digit' });
+        date = date.split('/');
+        date = [date[2], date[0], date[1]];
+        date = date.join('-');
+        dateInput.value = date;
+        // ---------------------------
 
         const buttonSubmit = newDiv();
         buttonSubmit.classList.add('buttons');
         buttonSubmit.innerHTML = 'Submit';
-        App.editItemSubmitEvent(buttonSubmit);
+        App.editItemSubmitEvent(buttonSubmit, item);
 
         formDiv.appendChild(title.label);
         formDiv.appendChild(title.input);
         formDiv.appendChild(description.label);
         formDiv.appendChild(description.input);
+        formDiv.appendChild(dateLabel);
+        formDiv.appendChild(dateInput);
         formDiv.appendChild(buttonSubmit);
-
         contentDiv.appendChild(formDiv);
     }
 
@@ -175,7 +191,7 @@ const Dom = (function() {
         input.setAttribute('type', 'text');
         input.setAttribute('name', field);
         input.id = field;
-        input.value = value;
+        if (value) input.value = value;
 
         return {
             label,
