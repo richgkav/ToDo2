@@ -4,24 +4,24 @@
 }
 
 body {
-	color: white;
-	background-color: black;
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', Arial, sans-serif;
 }
 
 #top-bar {
     width: 100%;
     height: 60px;
     line-height: 60px;
-    background-color: darkgreen;
     text-align: center;
     margin-bottom: 10px;
 }
 
 #main-div, #menu-bar, #function-div{
-    width: 100%;
+    min-width: 500px;
+    max-width: 900px;
     height: auto;
     display: grid;
     grid-template-columns: 1fr 4fr;
+    margin: 0 auto;
 }
 
 #main-div {
@@ -42,36 +42,40 @@ body {
     flex-direction: column;
 }
 
-#lists-container {
+#lists-container, #items-container{
     height: auto;
-    background-color: darkslateblue;
 }
 
 .list-element {
-    background-color: darkgrey;
+    margin: 5px;
     padding: 5px;
     border-style: solid;
     border-width: 1px;
+    border-radius: 5px;
 }
 
-#items-container {
-    height: auto;
-    background-color: darkmagenta;
+.list-element:hover {
+    box-shadow: 0px 0px 9px 0px rgba(0,0,0,0.75);
 }
 
 .item-element {
     display: grid;
     grid-template-columns: 4fr 1fr 1fr;
-    background-color: rgb(192, 0, 192);
 }
 
 .item-element>div {
     border-style: solid;
     border-width: 1px;
+    border-radius: 5px;
     padding: 5px;
+    margin: 5px 5px 0 5px;
 }
 
-#lists-functions, #items-functions {
+.item-element>div:hover {
+    box-shadow: 0px 0px 9px 0px rgba(0,0,0,0.75);
+}
+
+#lists-functions, #items-functions, #item-editor {
     display: flex;
     flex-direction: row;
     justify-content: start;
@@ -83,4 +87,49 @@ body {
     border-style: solid;
     border-width: 1px;  
     margin-left: 5px;
+    border-radius: 5px;
+}
+
+#lists-functions>div:hover {
+    box-shadow: 0px 0px 9px 0px rgba(0,0,0,0.75);
+}
+
+#items-functions>div:hover {
+    box-shadow: 0px 0px 9px 0px rgba(0,0,0,0.75);
+}
+
+.buttons:hover{
+    box-shadow: 0px 0px 9px 0px rgba(0,0,0,0.75);
+}
+
+.buttons {
+    width: 80px;
+}
+
+#item-editor {
+    flex-direction: column;
+    width: 500px;
+    margin: 0 auto;
+}
+
+#item-editor>label {
+    font-size: larger;
+}
+
+#item-editor>input {
+    margin: 5px 0 5px 0;
+    font-size: large;
+    padding: 3px;
+    border-style: solid;
+    border-width: 1px;
+    border-radius: 5px;
+}
+
+#item-editor>input:hover {
+    box-shadow: 0px 0px 9px 0px rgba(0,0,0,0.75); 
+}
+
+#item-editor>.buttons {
+    margin: 5px 0 5px 0;
+    text-align: center;
 }

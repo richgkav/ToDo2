@@ -67,7 +67,7 @@ const Dom = (function() {
         newDiv.classList.add('list-element');
         newDiv.innerHTML = details.title;
         if (details.selected) {
-            newDiv.style.backgroundColor = "darkred";
+            newDiv.style.backgroundColor = "#f7e3e3";
         }
 
         App.addListClickEvent(newDiv, details.id);
@@ -82,7 +82,7 @@ const Dom = (function() {
 
     // render one Item into #items-div
 
-    function renderItem(details) {
+    function renderItem(item) {
 
         const itemsDiv = document.getElementById('items-container');
 
@@ -91,25 +91,25 @@ const Dom = (function() {
         newDivItem.classList.add('item-element');
         itemsDiv.appendChild(newDivItem);
 
-        if (details.completed) {
-            newDivItem.style.backgroundColor = "darkred";
+        if (item.completed) {
+            newDivItem.style.backgroundColor = "#f7e3e3";
         }
 
         // Item display sections
         const newDivTitle = document.createElement('div');
-        newDivTitle.innerHTML = details.title;
+        newDivTitle.innerHTML = item.title;
         newDivItem.appendChild(newDivTitle);
-        App.addEditItemClickEvent(newDivTitle, details.id);
+        App.addEditItemClickEvent(newDivTitle, item.id);
 
         const newDivPriority = document.createElement('div');
-        newDivPriority.innerHTML = details.priority;
+        newDivPriority.innerHTML = item.priority;
         newDivItem.appendChild(newDivPriority);
-        App.addItemPriorityClickEvent(newDivPriority, details.id);
+        App.addItemPriorityClickEvent(newDivPriority, item.id);
 
         const newDivCompleted = document.createElement('div');
-        newDivCompleted.innerHTML = details.completed;
+        newDivCompleted.innerHTML = item.completed;
         newDivItem.appendChild(newDivCompleted);
-        App.addItemCompleteClickEvent(newDivCompleted, details.id);
+        App.addItemCompleteClickEvent(newDivCompleted, item.id);
 
     }
 
@@ -144,27 +144,58 @@ const Dom = (function() {
         App.addNewItemClickEvent(newDivAddItem);
     }
 
-    function renderItemEditor(renProp) {
+    function renderItemEditor(item) {
 
-        console.log(renProp);
+        //console.log(renProp);
         const contentDiv = clearContent();
-        const formDiv = newDiv();
+        const formDiv = newDiv('item-editor');
 
-        const title = renderLabelInput('Title', 'item-title', renProp.title);
-        const description = renderLabelInput('Description', 'item-description', renProp.description);
+        const title = renderLabelInput('Title', 'item-title', item.title);
+        const description = renderLabelInput('Description', 'item-description', item.description);
+        
+        // -------------------------
+        const dueLabel = document.createElement('label');
+        dueLabel.setAttribute('for', 'due-date');
+        dueLabel.innerHTML = 'Due Date';
+        const dueInput = document.createElement('input');
+        dueInput.setAttribute('type', 'date');
+        dueInput.setAttribute('name', 'due-date');
+        let date = item.dateDue.toLocaleDateString('en-UK', { year: 'numeric', month: '2-digit', day: '2-digit' });
+        date = date.split('/');
+        date = [date[2], date[0], date[1]];
+        dueInput.value = date.join('-');
+        // ---------------------------
 
+        const priLabel = document.createElement('label');
+        priLabel.innerHTML = "Priority"
+        const newDivPriority = document.createElement('div');
+        newDivPriority.classList.add('buttons');
+        newDivPriority.innerHTML = item.priority;
+        App.addEditPriorityClickEvent(newDivPriority, item);
+
+        const createdLabel = document.createElement('label');
+        date = item.dateCreated.toLocaleDateString('en-UK');
+        date = date.split('/');
+        date = [date[1], date[0], date[2]];
+        createdLabel.innerHTML = `Date created ${date.join('/')}`;
+        
         const buttonSubmit = newDiv();
         buttonSubmit.classList.add('buttons');
         buttonSubmit.innerHTML = 'Submit';
-        App.editItemSubmitEvent(buttonSubmit);
+        App.editItemSubmitEvent(buttonSubmit, item);
 
+        contentDiv.appendChild(formDiv);
         formDiv.appendChild(title.label);
         formDiv.appendChild(title.input);
         formDiv.appendChild(description.label);
         formDiv.appendChild(description.input);
+        formDiv.appendChild(dueLabel);
+        formDiv.appendChild(dueInput);
+        formDiv.appendChild(priLabel);
+        formDiv.appendChild(newDivPriority);
+        formDiv.appendChild(createdLabel);
         formDiv.appendChild(buttonSubmit);
-
-        contentDiv.appendChild(formDiv);
+        
     }
 
     function renderLabelInput(text, field, value) {
@@ -175,7 +206,7 @@ const Dom = (function() {
         input.setAttribute('type', 'text');
         input.setAttribute('name', field);
         input.id = field;
-        input.value = value;
+        if (value) input.value = value;
 
         return {
             label,

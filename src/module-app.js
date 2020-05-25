@@ -46,7 +46,7 @@ const App = (function() {
 
                 list.items.forEach(element => {
                     // dom render item
-                    Dom.renderItem(element.renderPropertiesList());
+                    Dom.renderItem(element);
                 });
             }
         }
@@ -76,10 +76,8 @@ const App = (function() {
     function addEditItemClickEvent(newDiv, id) {
         newDiv.addEventListener('click', function() {
 
-            // add code to go into the item editor
-
             const item = toDoList.currentList.getItemWithId(id);
-            Dom.renderItemEditor(item.renderPropertiesList());
+            Dom.renderItemEditor(item);
 
         });
     }
@@ -109,6 +107,16 @@ const App = (function() {
             item.priority += 1;
             if (item.priority === 4) item.priority = 1;
             displayItems();
+        });
+    }
+
+    // cycles through the 3 priority levels
+    function addEditPriorityClickEvent(newDiv, item) {
+        newDiv.addEventListener('click', function() {
+            //const tItem = toDoList.currentList.getItemWithId(item.id);
+            item.priority += 1;
+            if (item.priority === 4) item.priority = 1;
+            Dom.renderItemEditor(item);
         });
     }
 
@@ -163,19 +171,18 @@ const App = (function() {
             const newItem = new Mob.Item();
             newItem.title = "New item test";
             newItem.description = "Bla bla bla";
-            console.log(toDoList.currentList.title);
             if (toDoList.currentList) toDoList.currentList.addItem(newItem);
-            displayItems();
+            Dom.renderItemEditor(newItem);
         });
     }
 
-    function editItemSubmitEvent(newDiv) {
+    function editItemSubmitEvent(newDiv, item) {
         newDiv.addEventListener('click', function() {
             const itemTitle = document.getElementById('item-title');
             const itemDescription = document.getElementById('item-description');
 
-            console.log(`${itemTitle.value} - ${itemDescription.value}`);
-
+            if (itemTitle) item.title = itemTitle.value;
+            if (itemDescription) item.description = itemDescription.value;
 
             display();
         });
@@ -188,6 +195,7 @@ const App = (function() {
         addEditItemClickEvent,
         addItemCompleteClickEvent,
         addItemPriorityClickEvent,
+        addEditPriorityClickEvent,
         addNewFolderClickEvent,
         deleteFolderClickEvent,
         addNewItemClickEvent,
