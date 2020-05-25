@@ -67,7 +67,7 @@ const Dom = (function() {
         newDiv.classList.add('list-element');
         newDiv.innerHTML = details.title;
         if (details.selected) {
-            newDiv.style.backgroundColor = "darkred";
+            newDiv.style.backgroundColor = "#f7e3e3";
         }
 
         App.addListClickEvent(newDiv, details.id);
@@ -92,7 +92,7 @@ const Dom = (function() {
         itemsDiv.appendChild(newDivItem);
 
         if (item.completed) {
-            newDivItem.style.backgroundColor = "darkred";
+            newDivItem.style.backgroundColor = "#f7e3e3";
         }
 
         // Item display sections
@@ -148,39 +148,54 @@ const Dom = (function() {
 
         //console.log(renProp);
         const contentDiv = clearContent();
-        const formDiv = newDiv();
+        const formDiv = newDiv('item-editor');
 
         const title = renderLabelInput('Title', 'item-title', item.title);
         const description = renderLabelInput('Description', 'item-description', item.description);
         
         // -------------------------
-        const dateLabel = document.createElement('label');
-        dateLabel.setAttribute('for', 'due-date');
-        dateLabel.innerHTML = 'Due Date';
-        const dateInput = document.createElement('input');
-        dateInput.setAttribute('type', 'date');
-        dateInput.setAttribute('name', 'due-date');
-
+        const dueLabel = document.createElement('label');
+        dueLabel.setAttribute('for', 'due-date');
+        dueLabel.innerHTML = 'Due Date';
+        const dueInput = document.createElement('input');
+        dueInput.setAttribute('type', 'date');
+        dueInput.setAttribute('name', 'due-date');
         let date = item.dateDue.toLocaleDateString('en-UK', { year: 'numeric', month: '2-digit', day: '2-digit' });
         date = date.split('/');
         date = [date[2], date[0], date[1]];
-        date = date.join('-');
-        dateInput.value = date;
+        dueInput.value = date.join('-');
         // ---------------------------
 
+        const priLabel = document.createElement('label');
+        priLabel.innerHTML = "Priority"
+        const newDivPriority = document.createElement('div');
+        newDivPriority.classList.add('buttons');
+        newDivPriority.innerHTML = item.priority;
+        App.addEditPriorityClickEvent(newDivPriority, item);
+
+        const createdLabel = document.createElement('label');
+        date = item.dateCreated.toLocaleDateString('en-UK');
+        date = date.split('/');
+        date = [date[1], date[0], date[2]];
+        createdLabel.innerHTML = `Date created ${date.join('/')}`;
+        
         const buttonSubmit = newDiv();
         buttonSubmit.classList.add('buttons');
         buttonSubmit.innerHTML = 'Submit';
         App.editItemSubmitEvent(buttonSubmit, item);
 
+        contentDiv.appendChild(formDiv);
         formDiv.appendChild(title.label);
         formDiv.appendChild(title.input);
         formDiv.appendChild(description.label);
         formDiv.appendChild(description.input);
-        formDiv.appendChild(dateLabel);
-        formDiv.appendChild(dateInput);
+        formDiv.appendChild(dueLabel);
+        formDiv.appendChild(dueInput);
+        formDiv.appendChild(priLabel);
+        formDiv.appendChild(newDivPriority);
+        formDiv.appendChild(createdLabel);
         formDiv.appendChild(buttonSubmit);
-        contentDiv.appendChild(formDiv);
+        
     }
 
     function renderLabelInput(text, field, value) {

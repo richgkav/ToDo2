@@ -110,6 +110,16 @@ const App = (function() {
         });
     }
 
+    // cycles through the 3 priority levels
+    function addEditPriorityClickEvent(newDiv, item) {
+        newDiv.addEventListener('click', function() {
+            //const tItem = toDoList.currentList.getItemWithId(item.id);
+            item.priority += 1;
+            if (item.priority === 4) item.priority = 1;
+            Dom.renderItemEditor(item);
+        });
+    }
+
     function addNewFolderClickEvent(newDiv) {
         newDiv.addEventListener('click', function() {
             const newList = new Mob.List();
@@ -185,6 +195,7 @@ const App = (function() {
         addEditItemClickEvent,
         addItemCompleteClickEvent,
         addItemPriorityClickEvent,
+        addEditPriorityClickEvent,
         addNewFolderClickEvent,
         deleteFolderClickEvent,
         addNewItemClickEvent,
