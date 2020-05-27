@@ -59,8 +59,9 @@ const Dom = (function() {
         if (text) newH2.innerHTML = text;
         return newH2;
     }
-    // render one List into #lists-div
 
+    
+//  render one List into #lists-div
     function renderList(details) {
         const listsDiv = document.getElementById('lists-container');
         const newDiv = document.createElement('div');
@@ -129,11 +130,11 @@ const Dom = (function() {
 
         const newDivAddList = newDiv(null, 'Add List');
         listsFunctions.appendChild(newDivAddList);
-        App.addNewFolderClickEvent(newDivAddList);
+        App.addNewListClickEvent(newDivAddList);
 
         const newDivDelList = newDiv(null, 'Delete List');
         listsFunctions.appendChild(newDivDelList);
-        App.deleteFolderClickEvent(newDivDelList);
+        App.deleteListClickEvent(newDivDelList);
     }
 
     function renderItemsFunctions() {
@@ -142,11 +143,14 @@ const Dom = (function() {
         const newDivAddItem = newDiv(null, 'Add Item');
         itemsFunctions.appendChild(newDivAddItem);
         App.addNewItemClickEvent(newDivAddItem);
+
+        const newDivSave = newDiv(null, 'Save All');
+        itemsFunctions.appendChild(newDivSave);
+        App.addSaveClicked(newDivSave);
     }
 
     function renderItemEditor(item) {
 
-        //console.log(renProp);
         const contentDiv = clearContent();
         const formDiv = newDiv('item-editor');
 
@@ -164,6 +168,7 @@ const Dom = (function() {
         date = date.split('/');
         date = [date[2], date[0], date[1]];
         dueInput.value = date.join('-');
+        App.addDueDateChangedEvent(dueInput, item);
         // ---------------------------
 
         const priLabel = document.createElement('label');
@@ -174,6 +179,9 @@ const Dom = (function() {
         App.addEditPriorityClickEvent(newDivPriority, item);
 
         const createdLabel = document.createElement('label');
+
+        //console.log(typeof item.dateCreated);
+
         date = item.dateCreated.toLocaleDateString('en-UK');
         date = date.split('/');
         date = [date[1], date[0], date[2]];
@@ -183,6 +191,11 @@ const Dom = (function() {
         buttonSubmit.classList.add('buttons');
         buttonSubmit.innerHTML = 'Submit';
         App.editItemSubmitEvent(buttonSubmit, item);
+        
+        const buttonDelete = newDiv();
+        buttonDelete.classList.add('buttons');
+        buttonDelete.innerHTML = 'Delete';
+        App.addDeleteItemClickEvent(buttonDelete, item);  
 
         contentDiv.appendChild(formDiv);
         formDiv.appendChild(createdLabel);
@@ -194,6 +207,7 @@ const Dom = (function() {
         formDiv.appendChild(dueInput);
         formDiv.appendChild(priLabel);
         formDiv.appendChild(newDivPriority);
+        formDiv.appendChild(buttonDelete);
         formDiv.appendChild(buttonSubmit);
         
     }

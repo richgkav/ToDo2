@@ -3,11 +3,12 @@ const Mob = (function() {
     function AllLists() {
 
         this.lists = new Array();
-        this.currentList = null;
+        this.currentList = new List();
         this.listCounter = 0;           // each list has unique number but might not be the array index
 
         this.addList = function(list) {
             list.id = "todolist_" + this.listCounter++;
+            this.setCurrentList(list);///
             this.lists.push(list);
         };
 
@@ -21,10 +22,8 @@ const Mob = (function() {
         }
 
         this.setCurrentList = function (newList) {
-            //console.log(`Unselect ${this.currentList.title}`);
             this.currentList.selected = false;
             this.currentList = newList;
-            //console.log(`Selected ${this.currentList.title}`);
             this.currentList.selected = true;
         }
     }

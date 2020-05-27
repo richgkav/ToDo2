@@ -7,7 +7,7 @@ const App = (function() {
 
     let toDoList = undefined;       // this is the currently active to do list, use this to get reference to all the todo objects
 
-    function setupElementsForMain() {
+    function setupDisplayElements() {
         Dom.renderMenuBarDivs();
         Dom.renderMainDivs();
         Dom.renderFunctionBarDivs();
@@ -52,6 +52,7 @@ const App = (function() {
         }
     }
 
+    // just used with test data
     function setToDoList(newTdList) {
         if (newTdList) {
             toDoList = newTdList;
@@ -75,7 +76,6 @@ const App = (function() {
 
     function addEditItemClickEvent(newDiv, id) {
         newDiv.addEventListener('click', function() {
-
             const item = toDoList.currentList.getItemWithId(id);
             Dom.renderItemEditor(item);
 
@@ -120,7 +120,14 @@ const App = (function() {
         });
     }
 
-    function addNewFolderClickEvent(newDiv) {
+    function addDueDateChangedEvent(newDiv, item) {
+        newDiv.addEventListener('blur', function() {
+            item.dateDue = new Date(newDiv.value);
+        });
+    }
+
+
+    function addNewListClickEvent(newDiv) {
         newDiv.addEventListener('click', function() {
             const newList = new Mob.List();
             newList.title = "A new list";
@@ -128,10 +135,11 @@ const App = (function() {
             toDoList.addList(newList);
             displayLists();
             displayItems();
+
         });
     }
 
-    function deleteFolderClickEvent(newDiv) {
+    function deleteListClickEvent(newDiv) {
 
         newDiv.addEventListener('click', function() {
 
@@ -162,7 +170,21 @@ const App = (function() {
             else {
 
             }
+        });
+    }
 
+    function addDeleteItemClickEvent(newDiv, item) {
+        newDiv.addEventListener('click', function() {
+            if (window.confirm(`Delete the item titled \"${item.title}\"?`)){
+                const searchId = item.id;
+                const index = toDoList.currentList.items.findIndex(item => item.id === searchId);
+                toDoList.currentList.items.splice(index, 1);
+                if (toDoList.currentList.items.length > 0) {
+                    toDoList.currentList.currentItem = toDoList.currentList.items[0];
+                    toDoList.currentList.currentItem.selected = true;
+                }
+            }
+            display();
         });
     }
 
@@ -188,20 +210,32 @@ const App = (function() {
         });
     }
 
+    function addSaveClicked(newDiv) {
+        newDiv.addEventListener('click', function(){
+            console.log(toDoList.toString());
+            saveData();
+        });
+    }
+
     function loadData() {
 
-        console.log(toDoList);
-        
+        // its not setting the loaded id
+
+        const allToDoLists = new Mob.AllLists();
+
         if (storageAvailable('localStorage')) {
+
             const itemCounter = JSON.parse(localStorage.getItem('toDoItem_counter'));
-            //console.log(`item counter = ${itemCounter}`);
             const listCounter = JSON.parse(localStorage.getItem('toDoList_counter'));
-            //console.log(`list counter = ${listCounter}`);
+
+            allToDoLists.listCounter = listCounter;
+            Mob.Counter.setCounterValue(itemCounter);
 
             // only load keys from storage that start with 'toDoList'
             for (let i = 0; i != localStorage.length; i++) {
 
                 const key = localStorage.key(i);
+
                 if (key.startsWith('todolist')) {
 
                     const dataList = JSON.parse(localStorage.getItem(key));
@@ -216,29 +250,46 @@ const App = (function() {
                         dataList.selected
                     );
 
+                    console.log(`App.loadData() - newList.id = ${newList.id}`);
+
                     dataList.items.forEach(dataItem => {
+
+                        const nDateCreated = new Date(dataItem.dateCreated);
+                        const nDateDue = new Date(dataItem.dateDue);
                         const newItem = new Mob.Item();
+
                         newItem.setValues(
                             dataItem.id,
                             dataItem.title,
                             dataItem.description,
-                            dataItem.dateCreated,
-                            dataItem.dateDue,
+                            nDateCreated,
+                            nDateDue,
                             dataItem.priority,
                             dataItem.selected,
                             dataItem.completed
                         );
 
-                        newList.items.push(newItem);
+                        //console.log(`App.loadData() - newItem.id = ${newItem.id}`);
+
+                        newList.addItem(newItem);
 
                     });
+
+                    allToDoLists.lists.push(newList);
                 }
             }
-            console.log(toDoList);
+
+            const dListId = JSON.parse(localStorage.getItem('toDoList_current'));
+            const sList = allToDoLists.getListWithId(dListId);
+            allToDoLists.currentList = sList;
+            allToDoLists.currentList.selected = true;
+
         }
         else {
             console.log('localStorage is not available');
         }
+
+        return allToDoLists;
     }
 
     // list.id & item.id are unique keys
@@ -249,16 +300,38 @@ const App = (function() {
 
         if (storageAvailable('localStorage')) {
 
+            wipeLocalStorage();
+
             localStorage.setItem('toDoList_counter', JSON.stringify(toDoList.listCounter));
             localStorage.setItem('toDoItem_counter', JSON.stringify(Mob.Counter.currentValue()));
+            localStorage.setItem('toDoList_current', JSON.stringify(toDoList.currentList.id));
 
             toDoList.lists.forEach(list => {
                 localStorage.setItem(list.id, JSON.stringify(list));
             });
-
         }
         else {
             console.log('localStorage is not available');
+        }
+    }
+
+    function wipeLocalStorage() {
+
+        localStorage.removeItem('toDoList_counter');
+        localStorage.removeItem('toDoItem_counter');
+        localStorage.removeItem('toDoList_current');
+
+        if (localStorage.length > 0) {
+            for (let i = 0; i != localStorage.length; i++) {
+
+                const key = localStorage.key(i);
+
+                if (key !== null) {
+                    if (key.toLowerCase().startsWith('todolist')) {
+                        localStorage.removeItem(key);
+                    }
+                }
+            }
         }
     }
 
@@ -290,16 +363,20 @@ const App = (function() {
     return {
         display,
         setToDoList,
+        toDoList,
         addListClickEvent,
         addEditItemClickEvent,
         addItemCompleteClickEvent,
         addItemPriorityClickEvent,
         addEditPriorityClickEvent,
-        addNewFolderClickEvent,
-        deleteFolderClickEvent,
+        addNewListClickEvent,
+        deleteListClickEvent,
+        addDeleteItemClickEvent,
         addNewItemClickEvent,
-        setupElementsForMain,
+        addDueDateChangedEvent,
+        setupDisplayElements,
         editItemSubmitEvent,
+        addSaveClicked,
         saveData,
         loadData
     }
