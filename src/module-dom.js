@@ -185,6 +185,7 @@ const Dom = (function() {
         App.editItemSubmitEvent(buttonSubmit, item);
 
         contentDiv.appendChild(formDiv);
+        formDiv.appendChild(createdLabel);
         formDiv.appendChild(title.label);
         formDiv.appendChild(title.input);
         formDiv.appendChild(description.label);
@@ -193,7 +194,6 @@ const Dom = (function() {
         formDiv.appendChild(dueInput);
         formDiv.appendChild(priLabel);
         formDiv.appendChild(newDivPriority);
-        formDiv.appendChild(createdLabel);
         formDiv.appendChild(buttonSubmit);
         
     }

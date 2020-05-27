@@ -39,9 +39,9 @@ const Test = (function(){
 
     function dumpData() {
         allLists.lists.forEach(listElement => {
-            console.log(`${listElement.title} - ${listElement.id} - ${listElement.description} - ${listElement.dateCreated}`);
+            console.log(`${listElement.id} - ${listElement.title} - ${listElement.dateCreated}`);
             listElement.items.forEach(itemElement => {
-                console.log(` -- ${itemElement.title} - ${itemElement.id} - ${itemElement.description} - ${itemElement.dateCreated} - ${itemElement.dateDue}`);
+                console.log(` -- ${itemElement.id} - ${itemElement.parentId} - ${itemElement.title} - ${itemElement.dateCreated} - ${itemElement.dateDue}`);
             });
         });
     }

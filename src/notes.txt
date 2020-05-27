@@ -1,29 +1,10 @@
+const btnSave = document.getElementById('save-data');
+btnSave.addEventListener('click', () => {
+    const storeResult = localStorage.setItem('library-data', JSON.stringify(library.array));
+    });
 
-allLists
-
-    tdList
-        tdItem
-        tdItem
-        ...
-
-    tdList
-        tdItem
-        tdItem
-        ...
-
-allLists
-    array of tdLists
-
-tdList
-    name
-    description
-    dateCreated
-
-    array of tdItems
-    completed
-
-tdItem
-    name
-    description
-    dateCreated
+const library_data = JSON.parse(localStorage.getItem('library-data'));
+for (let i = 0; i != library_data.length; i++){
+    library.array.push(new Book(library_data[i].author, library_data[i].title, library_data[i].genre, library_data[i].read));
+}
 

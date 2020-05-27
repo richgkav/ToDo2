@@ -188,6 +188,105 @@ const App = (function() {
         });
     }
 
+    function loadData() {
+
+        console.log(toDoList);
+        
+        if (storageAvailable('localStorage')) {
+            const itemCounter = JSON.parse(localStorage.getItem('toDoItem_counter'));
+            //console.log(`item counter = ${itemCounter}`);
+            const listCounter = JSON.parse(localStorage.getItem('toDoList_counter'));
+            //console.log(`list counter = ${listCounter}`);
+
+            // only load keys from storage that start with 'toDoList'
+            for (let i = 0; i != localStorage.length; i++) {
+
+                const key = localStorage.key(i);
+                if (key.startsWith('todolist')) {
+
+                    const dataList = JSON.parse(localStorage.getItem(key));
+                    const newList = new Mob.List();
+
+                    newList.setValues(
+                        dataList.id,
+                        dataList.currentItem,
+                        dataList.title,
+                        dataList.description,
+                        dataList.dateCreated,
+                        dataList.selected
+                    );
+
+                    dataList.items.forEach(dataItem => {
+                        const newItem = new Mob.Item();
+                        newItem.setValues(
+                            dataItem.id,
+                            dataItem.title,
+                            dataItem.description,
+                            dataItem.dateCreated,
+                            dataItem.dateDue,
+                            dataItem.priority,
+                            dataItem.selected,
+                            dataItem.completed
+                        );
+
+                        newList.items.push(newItem);
+
+                    });
+                }
+            }
+            console.log(toDoList);
+        }
+        else {
+            console.log('localStorage is not available');
+        }
+    }
+
+    // list.id & item.id are unique keys
+    // also need to save item counter and list counter so that the keys arent
+    // generated twice
+
+    function saveData() {
+
+        if (storageAvailable('localStorage')) {
+
+            localStorage.setItem('toDoList_counter', JSON.stringify(toDoList.listCounter));
+            localStorage.setItem('toDoItem_counter', JSON.stringify(Mob.Counter.currentValue()));
+
+            toDoList.lists.forEach(list => {
+                localStorage.setItem(list.id, JSON.stringify(list));
+            });
+
+        }
+        else {
+            console.log('localStorage is not available');
+        }
+    }
+
+    function storageAvailable(type) {
+        var storage;
+        try {
+            storage = window[type];
+            var x = '__storage_test__';
+            storage.setItem(x, x);
+            storage.removeItem(x);
+            return true;
+        }
+        catch(e) {
+            return e instanceof DOMException && (
+                // everything except Firefox
+                e.code === 22 ||
+                // Firefox
+                e.code === 1014 ||
+                // test name field too, because code might not be present
+                // everything except Firefox
+                e.name === 'QuotaExceededError' ||
+                // Firefox
+                e.name === 'NS_ERROR_DOM_QUOTA_REACHED') &&
+                // acknowledge QuotaExceededError only if there's something already stored
+                (storage && storage.length !== 0);
+        }
+    }
+
     return {
         display,
         setToDoList,
@@ -200,7 +299,9 @@ const App = (function() {
         deleteFolderClickEvent,
         addNewItemClickEvent,
         setupElementsForMain,
-        editItemSubmitEvent
+        editItemSubmitEvent,
+        saveData,
+        loadData
     }
 
 })();

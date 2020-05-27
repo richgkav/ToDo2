@@ -20,6 +20,9 @@ function main() {
     App.setToDoList(allLists);
 
     App.setupElementsForMain();
+
+    App.saveData();
+    App.loadData();
     
     App.display();
  
