@@ -225,8 +225,14 @@ const App = (function() {
 
         if (storageAvailable('localStorage')) {
 
-            const itemCounter = JSON.parse(localStorage.getItem('toDoItem_counter'));
-            const listCounter = JSON.parse(localStorage.getItem('toDoList_counter'));
+        //    localStorage.setItem('tdLCounter', JSON.stringify(toDoList.listCounter));
+        //    localStorage.setItem('tdICounter', JSON.stringify(Mob.Counter.currentValue()));
+        //    localStorage.setItem('tdLCurrent', JSON.stringify(toDoList.currentList.id));
+
+            const itemCounter = JSON.parse(localStorage.getItem('tdICounter'));
+            console.log(`Loaded item counter ${itemCounter}`);
+            const listCounter = JSON.parse(localStorage.getItem('tdLCounter'));
+            console.log(`Loaded list counter ${listCounter}`);
 
             allToDoLists.listCounter = listCounter;
             Mob.Counter.setCounterValue(itemCounter);
@@ -279,7 +285,8 @@ const App = (function() {
                 }
             }
 
-            const dListId = JSON.parse(localStorage.getItem('toDoList_current'));
+            const dListId = JSON.parse(localStorage.getItem('tdLCurrent'));
+            console.log(`Loaded ${dListId}`);
             const sList = allToDoLists.getListWithId(dListId);
             allToDoLists.currentList = sList;
             allToDoLists.currentList.selected = true;
@@ -302,9 +309,9 @@ const App = (function() {
 
             wipeLocalStorage();
 
-            localStorage.setItem('toDoList_counter', JSON.stringify(toDoList.listCounter));
-            localStorage.setItem('toDoItem_counter', JSON.stringify(Mob.Counter.currentValue()));
-            localStorage.setItem('toDoList_current', JSON.stringify(toDoList.currentList.id));
+            localStorage.setItem('tdLCounter', JSON.stringify(toDoList.listCounter));
+            localStorage.setItem('tdICounter', JSON.stringify(Mob.Counter.currentValue()));
+            localStorage.setItem('tdLCurrent', JSON.stringify(toDoList.currentList.id));
 
             toDoList.lists.forEach(list => {
                 localStorage.setItem(list.id, JSON.stringify(list));
@@ -317,17 +324,15 @@ const App = (function() {
 
     function wipeLocalStorage() {
 
-        localStorage.removeItem('toDoList_counter');
-        localStorage.removeItem('toDoItem_counter');
-        localStorage.removeItem('toDoList_current');
-
         if (localStorage.length > 0) {
+
             for (let i = 0; i != localStorage.length; i++) {
 
                 const key = localStorage.key(i);
 
                 if (key !== null) {
                     if (key.toLowerCase().startsWith('todolist')) {
+                        console.log(`Removed ${key}`);
                         localStorage.removeItem(key);
                     }
                 }

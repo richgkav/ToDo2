@@ -1,13 +1,5 @@
-const btnSave = document.getElementById('save-data');
-btnSave.addEventListener('click', () => {
-    const storeResult = localStorage.setItem('library-data', JSON.stringify(library.array));
-    });
 
-const library_data = JSON.parse(localStorage.getItem('library-data'));
-for (let i = 0; i != library_data.length; i++){
-    library.array.push(new Book(library_data[i].author, library_data[i].title, library_data[i].genre, library_data[i].read));
-}
+// Mostly working but save sometimes crashes
 
-
-need to save the current List
+// suspect that save and load need to be completely rethought but that might also mean redoing object design etc.
 
