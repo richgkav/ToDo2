@@ -106,7 +106,7 @@ const App = (function() {
             const item = toDoList.currentList.getItemWithId(id);
             item.priority += 1;
             if (item.priority === 4) item.priority = 1;
-            displayItems();
+            newDiv.innerHTML = item.priority;
         });
     }
 
@@ -116,7 +116,7 @@ const App = (function() {
             //const tItem = toDoList.currentList.getItemWithId(item.id);
             item.priority += 1;
             if (item.priority === 4) item.priority = 1;
-            Dom.renderItemEditor(item);
+            newDiv.innerHTML = item.priority;
         });
     }
 
@@ -135,7 +135,6 @@ const App = (function() {
             toDoList.addList(newList);
             displayLists();
             displayItems();
-
         });
     }
 
@@ -271,7 +270,7 @@ const App = (function() {
                             nDateCreated,
                             nDateDue,
                             dataItem.priority,
-                            dataItem.selected,
+                            false,
                             dataItem.completed
                         );
 

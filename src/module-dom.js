@@ -92,10 +92,6 @@ const Dom = (function() {
         newDivItem.classList.add('item-element');
         itemsDiv.appendChild(newDivItem);
 
-        if (item.completed) {
-            newDivItem.style.backgroundColor = "#f7e3e3";
-        }
-
         // Item display sections
         const newDivTitle = document.createElement('div');
         newDivTitle.innerHTML = item.title;
@@ -111,6 +107,12 @@ const Dom = (function() {
         newDivCompleted.innerHTML = item.completed;
         newDivItem.appendChild(newDivCompleted);
         App.addItemCompleteClickEvent(newDivCompleted, item.id);
+
+        if (item.completed) {
+            newDivTitle.style.backgroundColor = "#d9d9d9";
+            newDivPriority.style.backgroundColor = "#d9d9d9";
+            newDivCompleted.style.backgroundColor = "#d9d9d9";
+        }
 
     }
 
@@ -175,6 +177,7 @@ const Dom = (function() {
         priLabel.innerHTML = "Priority"
         const newDivPriority = document.createElement('div');
         newDivPriority.classList.add('buttons');
+        newDivPriority.id = 'item-priority';
         newDivPriority.innerHTML = item.priority;
         App.addEditPriorityClickEvent(newDivPriority, item);
 
