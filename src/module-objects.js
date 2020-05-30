@@ -1,18 +1,20 @@
 const Mob = (function() {
 
-    function AllLists() {
+    class AllLists {
 
-        this.lists = new Array();
-        this.currentList = new List();
-        this.listCounter = 0;           // each list has unique number but might not be the array index
+        constructor () {
+            this.lists = [];
+            this.currentList = new List();
+            this.listCounter = 0;
+        }
 
-        this.addList = function(list) {
+        addList(list) {
             list.id = "todolist_" + this.listCounter++;
-            this.setCurrentList(list);///
+            this.setCurrentList(list);
             this.lists.push(list);
-        };
+        }
 
-        this.getListWithId = function(id) {
+        getListWithId(id) {
             for (let i = 0; i != this.lists.length; i++) {
                 if (this.lists[i].id === id) {
                     return this.lists[i];
@@ -21,7 +23,7 @@ const Mob = (function() {
             return false;
         }
 
-        this.setCurrentList = function (newList) {
+        setCurrentList(newList) {
             this.currentList.selected = false;
             this.currentList = newList;
             this.currentList.selected = true;
@@ -31,77 +33,80 @@ const Mob = (function() {
 // -------------------------------------------------------------------------- //
 // id is used to refer to the correct List or Item object after a click event
 
-    function List() {
-        this.items = [];
-        this.id = undefined;            // generated from AllLists.listCounter
-        this.currentItem = undefined;
-        this.dateCreated = new Date();
+    class List {
 
-        this.addItem = function(item) {
+        constructor () {
+            this.items = [];
+            this.id = undefined;          // generated from AllLists.listCounter
+            this.currentItem = undefined;
+            this.dateCreated = new Date();
+            this.title = "";
+            this.description = "";        // currently unused in List
+            this.selected = false;
+        }
+
+        addItem(item) {
             item.id = "todoitem_" + Counter.getCount();
             item.parentId = this.id;    // used in save & load matching
             this.items.push(item);
-        };
-    }
-
-    List.prototype.title = "";
-    List.prototype.description = "";        // currently unused in List
-    List.prototype.selected = false;
-
-    List.prototype.renderProperties = function() {
-        return {
-            title: this.title,
-            selected: this.selected,
-            id: this.id
-        }; // needs object format
-    }
-
-    List.prototype.getItemWithId = function(id) {
-        for (let i = 0; i != this.items.length; i++) {
-            if (this.items[i].id === id) {
-                return this.items[i];
-            }
         }
-        return false;
-    }
 
-    List.prototype.setValues = function(id, currentItem, title, description, dateCreated, selected) {
-        this.id = id;
-        this.currentItem = currentItem;
-        this.title = title;
-        this.description = description;
-        this.dateCreated = new Date(dateCreated);     // not in prototype as not gettings saved
-        this.selected = selected;
-    }
+        renderProperties() {
+            return {
+                title: this.title,
+                selected: this.selected,
+                id: this.id
+            };
+        }
 
-// -------------------------------------------------------------------------- //
-    function Item() {
-        this.dateCreated = new Date();
-        this.dateDue = (_addDays(new Date(), 28));
-        this.priority = 2;
-        this.completed = false;
-        this.id = undefined;
-        //this.parentId = undefined;
-    }
+        getItemWithId(id) {
+            for (let i = 0; i != this.items.length; i++) {
+                if (this.items[i].id === id) {
+                    return this.items[i];
+                }
+            }
+            return false;
+        }
 
-    // Set Item prototype to List prototype ("inherit" properties)
-    Item.prototype = Object.create(List.prototype);
-    // fix constructor back to Item as above instruction sets it to List
-    Item.prototype.constructor = Item;
-
-    Item.prototype.setValues = function(id, title, description, dateCreated, dateDue, priority, selected, completed){
-        this.id = id;
-        this.title = title;
-        this.description = description;
-        this.selected = selected;
-        this.priority = priority;
-        this.completed = completed;
-        this.dateCreated = dateCreated;
-        this.dateDue = (_addDays(new Date(dateDue), 28));
+        setValues(id, currentItem, title, description, dateCreated, selected) {
+            this.id = id;
+            this.currentItem = currentItem;
+            this.title = title;
+            this.description = description;
+            this.dateCreated = new Date(dateCreated);     // not in prototype as not gettings saved
+            this.selected = selected;
+        }
     }
 
 // -------------------------------------------------------------------------- //
-    function _addDays(date, days) {
+
+    class Item {
+        constructor() {
+            this.description = "";
+            this.dateCreated = new Date();
+            this.dateDue = (_addDays(new Date(), 28));
+            this.priority = 2;
+            this.completed = false;
+            this.id = undefined;   
+            this.selected = false;
+            this.description = "";
+        }
+
+        setValues(id, title, description, dateCreated, dateDue, priority, selected, completed){
+            this.id = id;
+            this.title = title;
+            this.description = description;
+            this.selected = selected;
+            this.priority = priority;
+            this.completed = completed;
+            this.dateCreated = dateCreated;
+            this.dateDue = (_addDays(new Date(dateDue), 28));
+        }
+    }
+
+// -------------------------------------------------------------------------- //
+    
+    const _addDays = function _addDaysToDateObject(date, days) {
         var result = new Date(date);
         result.setDate(result.getDate() + days);
         return result;

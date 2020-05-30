@@ -7,14 +7,14 @@ const App = (function() {
 
     let toDoList = undefined;       // this is the currently active to do list, use this to get reference to all the todo objects
 
-    function setupDisplayElements() {
+    const setup = function setupDisplayElements() {
         Dom.renderMenuBarDivs();
         Dom.renderMainDivs();
         Dom.renderFunctionBarDivs();
     }
     
     // Use to refresh everything on display
-    function display() {
+    const display = function displayEverything() {
         Dom.clearContent();
         Dom.renderMenuBarDivs();
         Dom.renderMainDivs();
@@ -25,7 +25,7 @@ const App = (function() {
         Dom.renderItemsFunctions(); // The item function buttons
     }
 
-    function displayLists() {
+    const displayLists = function displayAllLists() {
 
         if (toDoList !== undefined) {
             Dom.clearList();
@@ -35,7 +35,7 @@ const App = (function() {
         }
     }
 
-    function displayItems() {
+    const displayItems = function displayAllItems() {
 
         if (toDoList !== undefined) {
 
@@ -53,7 +53,7 @@ const App = (function() {
     }
 
     // just used with test data
-    function setToDoList(newTdList) {
+    const setToDoList = function _setToDoList(newTdList) {
         if (newTdList) {
             toDoList = newTdList;
         }
@@ -62,7 +62,7 @@ const App = (function() {
         }
     }
 
-    function addListClickEvent(newDiv, id) {
+    const addListClickEvent = function _addListClickEvent(newDiv, id) {
 
         newDiv.addEventListener('click', function() {
 
@@ -74,7 +74,7 @@ const App = (function() {
         });
     }
 
-    function addEditItemClickEvent(newDiv, id) {
+    const addEditItemClickEvent = function _addEditItemClickEvent(newDiv, id) {
         newDiv.addEventListener('click', function() {
             const item = toDoList.currentList.getItemWithId(id);
             Dom.renderItemEditor(item);
@@ -83,7 +83,7 @@ const App = (function() {
     }
 
     // toggles whether the item has been completed
-    function addItemCompleteClickEvent(newDiv, id) {
+    const addItemCompleteClickEvent = function _addItemCompleteClickEvent(newDiv, id) {
 
         newDiv.addEventListener('click', function() {
 
@@ -101,7 +101,7 @@ const App = (function() {
     }
 
     // cycles through the 3 priority levels
-    function addItemPriorityClickEvent(newDiv, id) {
+    const addItemPriorityClickEvent = function _addItemPriorityClickEvent(newDiv, id) {
         newDiv.addEventListener('click', function() {
             const item = toDoList.currentList.getItemWithId(id);
             item.priority += 1;
@@ -111,7 +111,7 @@ const App = (function() {
     }
 
     // cycles through the 3 priority levels
-    function addEditPriorityClickEvent(newDiv, item) {
+    const addEditPriorityClickEvent = function _addEditPriorityClickEvent(newDiv, item) {
         newDiv.addEventListener('click', function() {
             //const tItem = toDoList.currentList.getItemWithId(item.id);
             item.priority += 1;
@@ -120,14 +120,14 @@ const App = (function() {
         });
     }
 
-    function addDueDateChangedEvent(newDiv, item) {
+    const addDueDateChangedEvent = function _addDueDateChangedEvent(newDiv, item) {
         newDiv.addEventListener('blur', function() {
             item.dateDue = new Date(newDiv.value);
         });
     }
 
 
-    function addNewListClickEvent(newDiv) {
+    const addNewListClickEvent = function _addNewListClickEvent(newDiv) {
         newDiv.addEventListener('click', function() {
             const newList = new Mob.List();
             newList.title = "A new list";
@@ -138,7 +138,7 @@ const App = (function() {
         });
     }
 
-    function deleteListClickEvent(newDiv) {
+    const deleteListClickEvent = function _deleteListClickEvent(newDiv) {
 
         newDiv.addEventListener('click', function() {
 
@@ -172,7 +172,7 @@ const App = (function() {
         });
     }
 
-    function addDeleteItemClickEvent(newDiv, item) {
+    const addDeleteItemClickEvent = function _addDeleteItemClickEvent(newDiv, item) {
         newDiv.addEventListener('click', function() {
             if (window.confirm(`Delete the item titled \"${item.title}\"?`)){
                 const searchId = item.id;
@@ -187,7 +187,7 @@ const App = (function() {
         });
     }
 
-    function addNewItemClickEvent(newDiv) {
+    const addNewItemClickEvent = function _addNewItemClickEvent(newDiv) {
         newDiv.addEventListener('click', function() {
             const newItem = new Mob.Item();
             newItem.title = "New item test";
@@ -197,7 +197,7 @@ const App = (function() {
         });
     }
 
-    function editItemSubmitEvent(newDiv, item) {
+    const editItemSubmitEvent = function _editItemSubmitEvent(newDiv, item) {
         newDiv.addEventListener('click', function() {
             const itemTitle = document.getElementById('item-title');
             const itemDescription = document.getElementById('item-description');
@@ -209,14 +209,14 @@ const App = (function() {
         });
     }
 
-    function addSaveClicked(newDiv) {
+    const addSaveClicked = function _addSaveClicked(newDiv) {
         newDiv.addEventListener('click', function(){
             console.log(toDoList.toString());
             saveData();
         });
     }
 
-    function loadData() {
+    const loadData = function _loadData() {
 
         // its not setting the loaded id
 
@@ -302,7 +302,7 @@ const App = (function() {
     // also need to save item counter and list counter so that the keys arent
     // generated twice
 
-    function saveData() {
+    const saveData = function _saveData() {
 
         if (storageAvailable('localStorage')) {
 
@@ -321,7 +321,7 @@ const App = (function() {
         }
     }
 
-    function wipeLocalStorage() {
+    const wipeLocalStorage = function _wipeLocalStorage() {
 
         if (localStorage.length > 0) {
 
@@ -339,7 +339,7 @@ const App = (function() {
         }
     }
 
-    function storageAvailable(type) {
+    const storageAvailable = function _storageAvailable(type) {
         var storage;
         try {
             storage = window[type];
@@ -378,7 +378,7 @@ const App = (function() {
         addDeleteItemClickEvent,
         addNewItemClickEvent,
         addDueDateChangedEvent,
-        setupDisplayElements,
+        setup,
         editItemSubmitEvent,
         addSaveClicked,
         saveData,

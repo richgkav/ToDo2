@@ -4,7 +4,18 @@ const Dom = (function() {
 
     // Dom functions called by module-application
 
-    function renderMenuBarDivs() {
+    // -------------------------------------------------------------------------- //
+    
+    const clearChildElements = function _clearChildElements(node) {
+        // clears all child elements under the specified id
+        while (node.firstChild) {
+            node.removeChild(node.lastChild);
+        }
+    }
+
+    // -------------------------------------------------------------------------- //
+
+    const renderMenuBarDivs = function _renderMenuBarDivs() {
         // Renders the div elements for the main display
         const contentDiv = getDiv('content');
         const menuBarDiv = newDiv('menu-bar');
@@ -23,7 +34,7 @@ const Dom = (function() {
         itemsMenuDiv.appendChild(completedH2);
     }
     
-    function renderMainDivs() {
+    const renderMainDivs = function _renderMainDivs() {
         const contentDiv = getDiv('content');
         const mainDiv = newDiv('main-div');
         const listsContainerDiv = newDiv('lists-container');
@@ -33,7 +44,7 @@ const Dom = (function() {
         mainDiv.appendChild(itemsContainerDiv);
     }
 
-    function renderFunctionBarDivs() {
+    const renderFunctionBarDivs = function _renderFunctionBarDivs() {
         const contentDiv = getDiv('content');
         const functionDiv = newDiv('function-div');
         const listsFuncDiv = newDiv('lists-functions');
@@ -43,18 +54,18 @@ const Dom = (function() {
         functionDiv.appendChild(itemsFuncDiv);
     }
 
-    function newDiv(idName, innerHTML) {
+    const newDiv = function _newDiv(idName, innerHTML) {
         const newDiv = document.createElement('div');
         if (idName) newDiv.id = idName;
         if (innerHTML) newDiv.innerHTML = innerHTML;
         return newDiv;
     }
 
-    function getDiv(idName) {
+    const getDiv = function _getDiv(idName) {
         return document.getElementById(idName);
     }
 
-    function newH2(text) {
+    const newH2 = function _newH2(text) {
         const newH2 = document.createElement('H2');
         if (text) newH2.innerHTML = text;
         return newH2;
@@ -62,7 +73,7 @@ const Dom = (function() {
 
     
 //  render one List into #lists-div
-    function renderList(details) {
+    const renderList = function _renderList(details) {
         const listsDiv = document.getElementById('lists-container');
         const newDiv = document.createElement('div');
         newDiv.classList.add('list-element');
@@ -76,14 +87,14 @@ const Dom = (function() {
         listsDiv.appendChild(newDiv);
     }
 
-    function clearList() {
+    const clearList = function _clearList() {
         const listsDiv = document.getElementById('lists-container');
         clearChildElements(listsDiv); 
     }
 
     // render one Item into #items-div
 
-    function renderItem(item) {
+    const renderItem = function _renderItem(item) {
 
         const itemsDiv = document.getElementById('items-container');
 
@@ -116,18 +127,18 @@ const Dom = (function() {
 
     }
 
-    function clearItems() {
+    const clearItems = function _clearItems() {
         const itemsDiv = document.getElementById('items-container');
         clearChildElements(itemsDiv); 
     }
 
-    function clearContent() {
+    const clearContent = function _clearContent() {
         const contentDiv = document.getElementById('content');
         clearChildElements(contentDiv);
         return contentDiv;
     }
 
-    function renderListsFunctions() {
+    const renderListsFunctions = function _renderListsFunctions() {
         const listsFunctions = getDiv('lists-functions');
 
         const newDivAddList = newDiv(null, 'Add List');
@@ -139,7 +150,7 @@ const Dom = (function() {
         App.deleteListClickEvent(newDivDelList);
     }
 
-    function renderItemsFunctions() {
+    const renderItemsFunctions = function _renderItemsFunctions() {
         const itemsFunctions = document.getElementById('items-functions');
 
         const newDivAddItem = newDiv(null, 'Add Item');
@@ -151,7 +162,7 @@ const Dom = (function() {
         App.addSaveClicked(newDivSave);
     }
 
-    function renderItemEditor(item) {
+    const renderItemEditor = function _renderItemEditor(item) {
 
         const contentDiv = clearContent();
         const formDiv = newDiv('item-editor');
@@ -215,7 +226,7 @@ const Dom = (function() {
         
     }
 
-    function renderLabelInput(text, field, value) {
+    const renderLabelInput = function _renderLabelInput(text, field, value) {
         const label = document.createElement('label');
         label.setAttribute('for', field);
         label.innerHTML = text;
@@ -245,14 +256,7 @@ const Dom = (function() {
         renderItemEditor
     }
 
-// -------------------------------------------------------------------------- //
-    function clearChildElements(node) {
-        // clears all child elements under the specified id
-        while (node.firstChild) {
-            node.removeChild(node.lastChild);
-        }
-    }
-// -------------------------------------------------------------------------- //
+
 
 })();
 

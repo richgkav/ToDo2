@@ -9,7 +9,7 @@ function main() {
     //App.setToDoList(Test.createData());
     //App.saveData();
 
-    App.setupDisplayElements();
+    App.setup();
     App.setToDoList(App.loadData());
     App.display();
  
