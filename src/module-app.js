@@ -1,238 +1,249 @@
-import {Mob} from "./module-objects"
-import {Dom} from "./module-dom"
+import * as Mob from "./module-objects"
+import * as Dom from "./module-dom"
 
 // App should contain logic to render webpage but any rendering should be executed by module-dom
 
-const App = (function() {
 
-    let toDoList = undefined;       // this is the currently active to do list, use this to get reference to all the todo objects
+let toDoList = undefined;       // this is the currently active to do list, use this to get reference to all the todo objects
 
-    function setupDisplayElements() {
-        Dom.renderMenuBarDivs();
-        Dom.renderMainDivs();
-        Dom.renderFunctionBarDivs();
+export function setupDisplayElements() {
+    Dom.renderMenuBarDivs();
+    Dom.renderMainDivs();
+    Dom.renderFunctionBarDivs();
+}
+
+// Use to refresh everything on display
+export function display() {
+    Dom.clearContent();
+    Dom.renderMenuBarDivs();
+    Dom.renderMainDivs();
+    Dom.renderFunctionBarDivs();
+    displayLists();
+    displayItems();
+    Dom.renderListsFunctions(); // The list function buttons
+    Dom.renderItemsFunctions(); // The item function buttons
+}
+
+export function displayLists() {
+
+    if (toDoList !== undefined) {
+        Dom.clearList();
+        toDoList.lists.forEach(element => {
+            Dom.renderList(element.renderProperties());
+        });
     }
-    
-    // Use to refresh everything on display
-    function display() {
-        Dom.clearContent();
-        Dom.renderMenuBarDivs();
-        Dom.renderMainDivs();
-        Dom.renderFunctionBarDivs();
-        displayLists();
-        displayItems();
-        Dom.renderListsFunctions(); // The list function buttons
-        Dom.renderItemsFunctions(); // The item function buttons
-    }
+}
 
-    function displayLists() {
+export function displayItems() {
 
-        if (toDoList !== undefined) {
-            Dom.clearList();
-            toDoList.lists.forEach(element => {
-                Dom.renderList(element.renderProperties());
+    if (toDoList !== undefined) {
+
+        const list = toDoList.currentList;
+
+        if (list !== null) {
+            Dom.clearItems();
+
+            list.items.forEach(element => {
+                // dom render item
+                Dom.renderItem(element);
             });
         }
     }
+}
 
-    function displayItems() {
-
-        if (toDoList !== undefined) {
-
-            const list = toDoList.currentList;
-
-            if (list !== null) {
-                Dom.clearItems();
-
-                list.items.forEach(element => {
-                    // dom render item
-                    Dom.renderItem(element);
-                });
-            }
-        }
+// just used with test data
+export function setToDoList(newTdList) {
+    if (newTdList) {
+        toDoList = newTdList;
     }
+    else {
+        console.log('AllLists object not set.');
+    }
+}
 
-    // just used with test data
-    function setToDoList(newTdList) {
-        if (newTdList) {
-            toDoList = newTdList;
+export function addListClickEvent(newDiv, id) {
+
+    newDiv.addEventListener('click', function() {
+
+        const list = toDoList.getListWithId(id);
+        toDoList.setCurrentList(list);
+        displayLists();
+        displayItems();
+
+    });
+}
+
+export function addEditItemClickEvent(newDiv, id) {
+    newDiv.addEventListener('click', function() {
+        const item = toDoList.currentList.getItemWithId(id);
+        Dom.renderItemEditor(item);
+
+    });
+}
+
+// toggles whether the item has been completed
+export function addItemCompleteClickEvent(newDiv, id) {
+
+    newDiv.addEventListener('click', function() {
+
+        const item = toDoList.currentList.getItemWithId(id);
+
+        if (item.completed) {
+            item.completed = false;
         }
         else {
-            console.log('AllLists object not set.');
+            item.completed = true;
         }
-    }
 
-    function addListClickEvent(newDiv, id) {
+        displayItems();
+    });
+}
 
-        newDiv.addEventListener('click', function() {
+// cycles through the 3 priority levels
+export function addItemPriorityClickEvent(newDiv, id) {
+    newDiv.addEventListener('click', function() {
+        const item = toDoList.currentList.getItemWithId(id);
+        item.priority += 1;
+        if (item.priority === 4) item.priority = 1;
+        newDiv.innerHTML = item.priority;
+    });
+}
 
-            const list = toDoList.getListWithId(id);
-            toDoList.setCurrentList(list);
-            displayLists();
-            displayItems();
+// cycles through the 3 priority levels
+export function addEditPriorityClickEvent(newDiv, item) {
+    newDiv.addEventListener('click', function() {
+        //const tItem = toDoList.currentList.getItemWithId(item.id);
+        item.priority += 1;
+        if (item.priority === 4) item.priority = 1;
+        newDiv.innerHTML = item.priority;
+    });
+}
 
-        });
-    }
+export function addDueDateChangedEvent(newDiv, item) {
+    newDiv.addEventListener('blur', function() {
+        item.dateDue = new Date(newDiv.value);
+    });
+}
 
-    function addEditItemClickEvent(newDiv, id) {
-        newDiv.addEventListener('click', function() {
-            const item = toDoList.currentList.getItemWithId(id);
-            Dom.renderItemEditor(item);
 
-        });
-    }
+export function addNewListClickEvent(newDiv) {
+    newDiv.addEventListener('click', function() {
+        const newList = new Mob.List();
+        newList.title = "A new list";
+        newList.description = "Adding a new list";
+        toDoList.addList(newList);
+        displayLists();
+        displayItems();
+    });
+}
 
-    // toggles whether the item has been completed
-    function addItemCompleteClickEvent(newDiv, id) {
+export function deleteListClickEvent(newDiv) {
 
-        newDiv.addEventListener('click', function() {
+    newDiv.addEventListener('click', function() {
 
-            const item = toDoList.currentList.getItemWithId(id);
+        if (window.confirm(`Delete the list named \"${toDoList.currentList.title}\"?`)){
+            // find array index of the currently selected list
+            const searchId = toDoList.currentList.id;
+            const index = toDoList.lists.findIndex(list => list.id === searchId);
+            toDoList.currentList.items = [];
+            toDoList.lists.splice(index, 1);
 
-            if (item.completed) {
-                item.completed = false;
+            if (toDoList.lists.length > 0) {
+                // set list to first after deleting one
+                toDoList.currentList = toDoList.lists[0];
+                toDoList.currentList.selected = true;
             }
             else {
-                item.completed = true;
+                // There are no lists so create a new default one
+                const newList = new Mob.List();
+                newList.title = "Default";
+                newList.selected = true;
+                toDoList.currentList = newList;
+                toDoList.addList(newList);
             }
 
-            displayItems();
-        });
-    }
-
-    // cycles through the 3 priority levels
-    function addItemPriorityClickEvent(newDiv, id) {
-        newDiv.addEventListener('click', function() {
-            const item = toDoList.currentList.getItemWithId(id);
-            item.priority += 1;
-            if (item.priority === 4) item.priority = 1;
-            newDiv.innerHTML = item.priority;
-        });
-    }
-
-    // cycles through the 3 priority levels
-    function addEditPriorityClickEvent(newDiv, item) {
-        newDiv.addEventListener('click', function() {
-            //const tItem = toDoList.currentList.getItemWithId(item.id);
-            item.priority += 1;
-            if (item.priority === 4) item.priority = 1;
-            newDiv.innerHTML = item.priority;
-        });
-    }
-
-    function addDueDateChangedEvent(newDiv, item) {
-        newDiv.addEventListener('blur', function() {
-            item.dateDue = new Date(newDiv.value);
-        });
-    }
-
-
-    function addNewListClickEvent(newDiv) {
-        newDiv.addEventListener('click', function() {
-            const newList = new Mob.List();
-            newList.title = "A new list";
-            newList.description = "Adding a new list";
-            toDoList.addList(newList);
             displayLists();
             displayItems();
-        });
-    }
+        }
+        else {
 
-    function deleteListClickEvent(newDiv) {
+        }
+    });
+}
 
-        newDiv.addEventListener('click', function() {
-
-            if (window.confirm(`Delete the list named \"${toDoList.currentList.title}\"?`)){
-                // find array index of the currently selected list
-                const searchId = toDoList.currentList.id;
-                const index = toDoList.lists.findIndex(list => list.id === searchId);
-                toDoList.currentList.items = [];
-                toDoList.lists.splice(index, 1);
-
-                if (toDoList.lists.length > 0) {
-                    // set list to first after deleting one
-                    toDoList.currentList = toDoList.lists[0];
-                    toDoList.currentList.selected = true;
-                }
-                else {
-                    // There are no lists so create a new default one
-                    const newList = new Mob.List();
-                    newList.title = "Default";
-                    newList.selected = true;
-                    toDoList.currentList = newList;
-                    toDoList.addList(newList);
-                }
-
-                displayLists();
-                displayItems();
+export function addDeleteItemClickEvent(newDiv, item) {
+    newDiv.addEventListener('click', function() {
+        if (window.confirm(`Delete the item titled \"${item.title}\"?`)){
+            const searchId = item.id;
+            const index = toDoList.currentList.items.findIndex(item => item.id === searchId);
+            toDoList.currentList.items.splice(index, 1);
+            if (toDoList.currentList.items.length > 0) {
+                toDoList.currentList.currentItem = toDoList.currentList.items[0];
+                toDoList.currentList.currentItem.selected = true;
             }
-            else {
+        }
+        display();
+    });
+}
 
-            }
-        });
-    }
+export function addNewItemClickEvent(newDiv) {
+    newDiv.addEventListener('click', function() {
+        const newItem = new Mob.Item();
+        newItem.title = "New item test";
+        newItem.description = "Bla bla bla";
+        if (toDoList.currentList) toDoList.currentList.addItem(newItem);
+        Dom.renderItemEditor(newItem);
+    });
+}
 
-    function addDeleteItemClickEvent(newDiv, item) {
-        newDiv.addEventListener('click', function() {
-            if (window.confirm(`Delete the item titled \"${item.title}\"?`)){
-                const searchId = item.id;
-                const index = toDoList.currentList.items.findIndex(item => item.id === searchId);
-                toDoList.currentList.items.splice(index, 1);
-                if (toDoList.currentList.items.length > 0) {
-                    toDoList.currentList.currentItem = toDoList.currentList.items[0];
-                    toDoList.currentList.currentItem.selected = true;
-                }
-            }
-            display();
-        });
-    }
+export function editItemSubmitEvent(newDiv, item) {
+    newDiv.addEventListener('click', function() {
+        const itemTitle = document.getElementById('item-title');
+        const itemDescription = document.getElementById('item-description');
 
-    function addNewItemClickEvent(newDiv) {
-        newDiv.addEventListener('click', function() {
-            const newItem = new Mob.Item();
-            newItem.title = "New item test";
-            newItem.description = "Bla bla bla";
-            if (toDoList.currentList) toDoList.currentList.addItem(newItem);
-            Dom.renderItemEditor(newItem);
-        });
-    }
+        if (itemTitle) item.title = itemTitle.value;
+        if (itemDescription) item.description = itemDescription.value;
 
-    function editItemSubmitEvent(newDiv, item) {
-        newDiv.addEventListener('click', function() {
-            const itemTitle = document.getElementById('item-title');
-            const itemDescription = document.getElementById('item-description');
+        display();
+    });
+}
 
-            if (itemTitle) item.title = itemTitle.value;
-            if (itemDescription) item.description = itemDescription.value;
+export function addSaveClicked(newDiv) {
+    newDiv.addEventListener('click', function(){
+        console.log(toDoList.toString());
+        saveData();
+    });
+}
 
-            display();
-        });
-    }
+export function loadData() {
 
-    function addSaveClicked(newDiv) {
-        newDiv.addEventListener('click', function(){
-            console.log(toDoList.toString());
-            saveData();
-        });
-    }
+    // its not setting the loaded id
 
-    function loadData() {
+    const allToDoLists = new Mob.AllLists();
 
-        // its not setting the loaded id
+    if (storageAvailable('localStorage')) {
 
-        const allToDoLists = new Mob.AllLists();
+    //    localStorage.setItem('tdLCounter', JSON.stringify(toDoList.listCounter));
+    //    localStorage.setItem('tdICounter', JSON.stringify(Mob.Counter.currentValue()));
+    //    localStorage.setItem('tdLCurrent', JSON.stringify(toDoList.currentList.id));
 
-        if (storageAvailable('localStorage')) {
-
-        //    localStorage.setItem('tdLCounter', JSON.stringify(toDoList.listCounter));
-        //    localStorage.setItem('tdICounter', JSON.stringify(Mob.Counter.currentValue()));
-        //    localStorage.setItem('tdLCurrent', JSON.stringify(toDoList.currentList.id));
-
-            const itemCounter = JSON.parse(localStorage.getItem('tdICounter'));
-            console.log(`Loaded item counter ${itemCounter}`);
-            const listCounter = JSON.parse(localStorage.getItem('tdLCounter'));
-            console.log(`Loaded list counter ${listCounter}`);
-
+        const itemCounter = JSON.parse(localStorage.getItem('tdICounter'));
+        const listCounter = JSON.parse(localStorage.getItem('tdLCounter')); 
+        
+        if (itemCounter === null && listCounter === null) {
+            // create blank list
+            //allToDoLists = new Mob.AllLists();
+            console.log('No data found in localStorage.');
+            const defaultList = new Mob.List();         // default list
+            defaultList.title = "Default";
+            defaultList.description = "Create todo items in here";
+            defaultList.selected = true;
+            allToDoLists.currentList = defaultList;
+            allToDoLists.addList(defaultList);
+            console.log('Created default data.');
+        }
+        else {
+            // load data
             allToDoLists.listCounter = listCounter;
             Mob.Counter.setCounterValue(itemCounter);
 
@@ -255,7 +266,7 @@ const App = (function() {
                         dataList.selected
                     );
 
-                    console.log(`App.loadData() - newList.id = ${newList.id}`);
+                    //console.log(`App.loadData() - newList.id = ${newList.id}`);
 
                     dataList.items.forEach(dataItem => {
 
@@ -283,108 +294,83 @@ const App = (function() {
                     allToDoLists.lists.push(newList);
                 }
             }
-
             const dListId = JSON.parse(localStorage.getItem('tdLCurrent'));
-            console.log(`Loaded ${dListId}`);
             const sList = allToDoLists.getListWithId(dListId);
             allToDoLists.currentList = sList;
             allToDoLists.currentList.selected = true;
-
-        }
-        else {
-            console.log('localStorage is not available');
+            console.log('Lists loaded from localStorage');
         }
 
-        return allToDoLists;
+    }
+    else {
+        console.log('localStorage is not available');
     }
 
-    // list.id & item.id are unique keys
-    // also need to save item counter and list counter so that the keys arent
-    // generated twice
+    return allToDoLists;
+}
 
-    function saveData() {
+// list.id & item.id are unique keys
+// also need to save item counter and list counter so that the keys arent
+// generated twice
 
-        if (storageAvailable('localStorage')) {
+export function saveData() {
 
-            wipeLocalStorage();
+    if (storageAvailable('localStorage')) {
 
-            localStorage.setItem('tdLCounter', JSON.stringify(toDoList.listCounter));
-            localStorage.setItem('tdICounter', JSON.stringify(Mob.Counter.currentValue()));
-            localStorage.setItem('tdLCurrent', JSON.stringify(toDoList.currentList.id));
+        wipeLocalStorage();
 
-            toDoList.lists.forEach(list => {
-                localStorage.setItem(list.id, JSON.stringify(list));
-            });
-        }
-        else {
-            console.log('localStorage is not available');
-        }
+        localStorage.setItem('tdLCounter', JSON.stringify(toDoList.listCounter));
+        localStorage.setItem('tdICounter', JSON.stringify(Mob.Counter.currentValue()));
+        localStorage.setItem('tdLCurrent', JSON.stringify(toDoList.currentList.id));
+
+        toDoList.lists.forEach(list => {
+            localStorage.setItem(list.id, JSON.stringify(list));
+        });
     }
+    else {
+        console.log('localStorage is not available');
+    }
+}
 
-    function wipeLocalStorage() {
+export function wipeLocalStorage() {
 
-        if (localStorage.length > 0) {
+    if (localStorage.length > 0) {
 
-            for (let i = 0; i != localStorage.length; i++) {
+        for (let i = 0; i != localStorage.length; i++) {
 
-                const key = localStorage.key(i);
+            const key = localStorage.key(i);
 
-                if (key !== null) {
-                    if (key.toLowerCase().startsWith('todolist')) {
-                        console.log(`Removed ${key}`);
-                        localStorage.removeItem(key);
-                    }
+            if (key !== null) {
+                if (key.toLowerCase().startsWith('todolist')) {
+                    console.log(`Removed ${key}`);
+                    localStorage.removeItem(key);
                 }
             }
         }
     }
+}
 
-    function storageAvailable(type) {
-        var storage;
-        try {
-            storage = window[type];
-            var x = '__storage_test__';
-            storage.setItem(x, x);
-            storage.removeItem(x);
-            return true;
-        }
-        catch(e) {
-            return e instanceof DOMException && (
-                // everything except Firefox
-                e.code === 22 ||
-                // Firefox
-                e.code === 1014 ||
-                // test name field too, because code might not be present
-                // everything except Firefox
-                e.name === 'QuotaExceededError' ||
-                // Firefox
-                e.name === 'NS_ERROR_DOM_QUOTA_REACHED') &&
-                // acknowledge QuotaExceededError only if there's something already stored
-                (storage && storage.length !== 0);
-        }
+export function storageAvailable(type) {
+    var storage;
+    try {
+        storage = window[type];
+        var x = '__storage_test__';
+        storage.setItem(x, x);
+        storage.removeItem(x);
+        return true;
     }
-
-    return {
-        display,
-        setToDoList,
-        toDoList,
-        addListClickEvent,
-        addEditItemClickEvent,
-        addItemCompleteClickEvent,
-        addItemPriorityClickEvent,
-        addEditPriorityClickEvent,
-        addNewListClickEvent,
-        deleteListClickEvent,
-        addDeleteItemClickEvent,
-        addNewItemClickEvent,
-        addDueDateChangedEvent,
-        setupDisplayElements,
-        editItemSubmitEvent,
-        addSaveClicked,
-        saveData,
-        loadData
+    catch(e) {
+        return e instanceof DOMException && (
+            // everything except Firefox
+            e.code === 22 ||
+            // Firefox
+            e.code === 1014 ||
+            // test name field too, because code might not be present
+            // everything except Firefox
+            e.name === 'QuotaExceededError' ||
+            // Firefox
+            e.name === 'NS_ERROR_DOM_QUOTA_REACHED') &&
+            // acknowledge QuotaExceededError only if there's something already stored
+            (storage && storage.length !== 0);
     }
-
-})();
-
-export {App};
+}

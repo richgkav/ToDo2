@@ -1,6 +1,6 @@
 import "./styles.css";
-import {App} from "./module-app"
-import {Test} from "./module-testdata"
+import * as App from "./module-app"
+//import {Test} from "./module-testdata"
 
 window.onload = main;
 
