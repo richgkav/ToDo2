@@ -1,6 +1,5 @@
 import * as App from "./module-app";
 
-
 export function renderMenuBarDivs() {
     // Renders the div elements for the main display
     const contentDiv = getDiv('content');

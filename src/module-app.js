@@ -3,8 +3,7 @@ import * as Dom from "./module-dom"
 
 // App should contain logic to render webpage but any rendering should be executed by module-dom
 
-
-let toDoList = undefined;       // this is the currently active to do list, use this to get reference to all the todo objects
+let toDoList = undefined;       
 
 export function setupDisplayElements() {
     Dom.renderMenuBarDivs();

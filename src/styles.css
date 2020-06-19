@@ -174,8 +174,3 @@ body {
     margin-left: 10px;
     text-align: center;
 }
-
-.horizontal-line {
-    width: 100%;
-    border: 1px solid var(--col-4);
-}

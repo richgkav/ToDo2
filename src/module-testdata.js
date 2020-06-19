@@ -1,4 +1,4 @@
-import {Mob} from "./module-objects"
+import * as Mob from "./module-objects"
 
 const Test = (function(){
 
