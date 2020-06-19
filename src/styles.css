@@ -1,3 +1,11 @@
+:root {
+    --col-1: #fffffa;
+    --col-2: #78cdd7;
+    --col-3: #657ed4;
+    --col-4: #2f323a;
+    --col-5: #e39ec1;
+}
+
 * {
     margin: 0;
     padding: 0;
@@ -11,6 +19,9 @@ body {
     width: 100%;
     padding: 20px 0 20px 0;
     text-align: center;
+    border-bottom: 2px;
+    border-bottom-style: solid;
+    background-color: var(--col-2);
 }
 
 #main-div, #menu-bar, #function-div{
@@ -23,7 +34,11 @@ body {
 }
 
 #main-div {
+    margin-top: 15px;
     margin-bottom: 15px;
+    border-bottom: 2px;
+    border-bottom-style: solid;
+    padding-bottom: 20px;
 }
 
 #items-menu {
@@ -33,6 +48,13 @@ body {
 
 #menu-bar, h2, h3 {
     padding: 0 5px 2px 5px;
+    margin-top: 10px;
+}
+
+#lists-menu, #items-menu {
+    border-bottom: 2px;
+    border-bottom-style: solid;
+    padding-bottom: 5px;
 }
 
 #list-container, #items-container {
@@ -107,19 +129,21 @@ body {
     width: 80px;
 }
 
+/* ---------- item editor ---------- */
+
 #item-editor {
     flex-direction: column;
     width: 500px;
-    margin: 0 auto;
+    margin: 20px auto;
 }
 
 #item-editor>label {
-    font-size: larger;
+    font-size: large;
 }
 
 #item-editor>input {
-    margin: 5px 0 5px 0;
-    font-size: large;
+    margin: 5px 0 15px 0;
+    font-size: medium;
     padding: 3px;
     border-style: solid;
     border-width: 1px;
@@ -133,4 +157,25 @@ body {
 #item-editor>.buttons {
     margin: 5px 0 5px 0;
     text-align: center;
+}
+
+.created-label {
+    margin-bottom: 15px;
+}
+
+#edit-buttons {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    margin: 20px 0 20px 0;
+}
+
+#edit-buttons>div {
+    margin-left: 10px;
+    text-align: center;
+}
+
+.horizontal-line {
+    width: 100%;
+    border: 1px solid var(--col-4);
 }

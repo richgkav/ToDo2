@@ -7,7 +7,7 @@ export function renderMenuBarDivs() {
     const menuBarDiv = newDiv('menu-bar');
     const listsMenuDiv = newDiv('lists-menu');
     const itemsMenuDiv = newDiv('items-menu');
-    const menuH2 = newH2('Menu');
+    const menuH2 = newH2('List');
     const itemsH2 = newH2('Items');
     const priorityH2 = newH2('Priority');
     const completedH2 = newH2('Completed');
@@ -40,10 +40,11 @@ export function renderFunctionBarDivs() {
     functionDiv.appendChild(itemsFuncDiv);
 }
 
-export function newDiv(idName, innerHTML) {
+export function newDiv(idName, innerHTML, className) {
     const newDiv = document.createElement('div');
     if (idName) newDiv.id = idName;
     if (innerHTML) newDiv.innerHTML = innerHTML;
+    if (className) newDiv.classList.add(className);
     return newDiv;
 }
 
@@ -100,8 +101,16 @@ export function renderItem(item) {
     newDivItem.appendChild(newDivPriority);
     App.addItemPriorityClickEvent(newDivPriority, item.id);
 
+    // render item completed yes if true no if false
     const newDivCompleted = document.createElement('div');
-    newDivCompleted.innerHTML = item.completed;
+
+    if (item.completed === true) {
+        newDivCompleted.innerHTML = 'Yes';
+    }
+    else {
+        newDivCompleted.innerHTML = 'No';
+    }
+
     newDivItem.appendChild(newDivCompleted);
     App.addItemCompleteClickEvent(newDivCompleted, item.id);
 
@@ -158,21 +167,26 @@ export function renderItemEditor(item) {
     const formDiv = newDiv('item-editor');
 
     const title = renderLabelInput('Title', 'item-title', item.title);
-    const description = renderLabelInput('Description', 'item-description', item.description);
-    
-    // -------------------------
+
+    const description = renderLabelInput(
+        'Description', 'item-description', item.description
+        );
+
     const dueLabel = document.createElement('label');
     dueLabel.setAttribute('for', 'due-date');
     dueLabel.innerHTML = 'Due Date';
+
     const dueInput = document.createElement('input');
     dueInput.setAttribute('type', 'date');
     dueInput.setAttribute('name', 'due-date');
-    let date = item.dateDue.toLocaleDateString('en-UK', { year: 'numeric', month: '2-digit', day: '2-digit' });
+
+    let date = item.dateDue.toLocaleDateString(
+        'en-UK', { year: 'numeric', month: '2-digit', day: '2-digit' });
+
     date = date.split('/');
     date = [date[2], date[0], date[1]];
     dueInput.value = date.join('-');
     App.addDueDateChangedEvent(dueInput, item);
-    // ---------------------------
 
     const priLabel = document.createElement('label');
     priLabel.innerHTML = "Priority"
@@ -183,8 +197,7 @@ export function renderItemEditor(item) {
     App.addEditPriorityClickEvent(newDivPriority, item);
 
     const createdLabel = document.createElement('label');
-
-    //console.log(typeof item.dateCreated);
+    createdLabel.classList.add('created-label');
 
     date = item.dateCreated.toLocaleDateString('en-UK');
     date = date.split('/');
@@ -199,7 +212,10 @@ export function renderItemEditor(item) {
     const buttonDelete = newDiv();
     buttonDelete.classList.add('buttons');
     buttonDelete.innerHTML = 'Delete';
-    App.addDeleteItemClickEvent(buttonDelete, item);  
+    App.addDeleteItemClickEvent(buttonDelete, item);
+
+    const buttonContainer = newDiv('edit-buttons');
+    buttonContainer.append(buttonSubmit, buttonDelete);
 
     contentDiv.appendChild(formDiv);
     formDiv.appendChild(createdLabel);
@@ -211,8 +227,7 @@ export function renderItemEditor(item) {
     formDiv.appendChild(dueInput);
     formDiv.appendChild(priLabel);
     formDiv.appendChild(newDivPriority);
-    formDiv.appendChild(buttonDelete);
-    formDiv.appendChild(buttonSubmit);
+    formDiv.appendChild(buttonContainer);
     
 }
 

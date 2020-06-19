@@ -87,7 +87,8 @@ Item.prototype = Object.create(List.prototype);
 // fix constructor back to Item as above instruction sets it to List
 Item.prototype.constructor = Item;
 
-Item.prototype.setValues = function(id, title, description, dateCreated, dateDue, priority, selected, completed){
+Item.prototype.setValues = function(id, title, description, dateCreated, 
+    dateDue, priority, selected, completed){
     this.id = id;
     this.title = title;
     this.description = description;

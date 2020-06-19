@@ -197,8 +197,8 @@ export function addDeleteItemClickEvent(newDiv, item) {
 export function addNewItemClickEvent(newDiv) {
     newDiv.addEventListener('click', function() {
         const newItem = new Mob.Item();
-        newItem.title = "New item test";
-        newItem.description = "Bla bla bla";
+        newItem.title = "";
+        newItem.description = "";
         if (toDoList.currentList) toDoList.currentList.addItem(newItem);
         Dom.renderItemEditor(newItem);
     });
@@ -218,42 +218,30 @@ export function editItemSubmitEvent(newDiv, item) {
 
 export function addSaveClicked(newDiv) {
     newDiv.addEventListener('click', function(){
-        console.log(toDoList.toString());
         saveData();
     });
 }
 
 export function loadData() {
 
-    // its not setting the loaded id
-
     const allToDoLists = new Mob.AllLists();
 
     if (storageAvailable('localStorage')) {
 
-    //    localStorage.setItem('tdLCounter', JSON.stringify(toDoList.listCounter));
-    //    localStorage.setItem('tdICounter', JSON.stringify(Mob.Counter.currentValue()));
-    //    localStorage.setItem('tdLCurrent', JSON.stringify(toDoList.currentList.id));
-
         const itemCounter = JSON.parse(localStorage.getItem('tdICounter'));
         const listCounter = JSON.parse(localStorage.getItem('tdLCounter')); 
         
+        // Check localStorage for previous save
+
         if (itemCounter === null && listCounter === null) {
-            // create blank list
-            //allToDoLists = new Mob.AllLists();
-            console.log('No data found in localStorage.');
-            const defaultList = new Mob.List();         // default list
-            defaultList.title = "Default";
-            defaultList.description = "Create todo items in here";
-            defaultList.selected = true;
-            allToDoLists.currentList = defaultList;
-            allToDoLists.addList(defaultList);
-            console.log('Created default data.');
+            createDefaultData(allToDoLists);
         }
         else {
             // load data
             allToDoLists.listCounter = listCounter;
             Mob.Counter.setCounterValue(itemCounter);
+
+            let loadCount = 0;
 
             // only load keys from storage that start with 'toDoList'
             for (let i = 0; i != localStorage.length; i++) {
@@ -261,6 +249,8 @@ export function loadData() {
                 const key = localStorage.key(i);
 
                 if (key.startsWith('todolist')) {
+
+                    // a key 'todolist_[num]' was found
 
                     const dataList = JSON.parse(localStorage.getItem(key));
                     const newList = new Mob.List();
@@ -274,7 +264,7 @@ export function loadData() {
                         dataList.selected
                     );
 
-                    //console.log(`App.loadData() - newList.id = ${newList.id}`);
+                    // Now load the list items
 
                     dataList.items.forEach(dataItem => {
 
@@ -293,20 +283,30 @@ export function loadData() {
                             dataItem.completed
                         );
 
-                        //console.log(`App.loadData() - newItem.id = ${newItem.id}`);
-
                         newList.addItem(newItem);
 
                     });
 
                     allToDoLists.lists.push(newList);
+                    loadCount++;
+
                 }
             }
-            const dListId = JSON.parse(localStorage.getItem('tdLCurrent'));
-            const sList = allToDoLists.getListWithId(dListId);
-            allToDoLists.currentList = sList;
-            allToDoLists.currentList.selected = true;
-            console.log('Lists loaded from localStorage');
+
+            // Check if there is an error and no keys were found.
+            // Data was possibly corrupted with a previous crash when
+            // saving.
+
+            if (!loadCount) {
+                createDefaultData(allToDoLists);
+            }
+            else {
+                const dListId = JSON.parse(localStorage.getItem('tdLCurrent'));
+                const sList = allToDoLists.getListWithId(dListId);
+                allToDoLists.currentList = sList;
+                allToDoLists.currentList.selected = true;
+                console.log('Lists loaded from localStorage');
+            }
         }
 
     }
@@ -317,6 +317,19 @@ export function loadData() {
     return allToDoLists;
 }
 
+function createDefaultData(allToDoLists) {
+    // create blank list
+    //allToDoLists = new Mob.AllLists();
+    console.log('No data found in localStorage.');
+    const defaultList = new Mob.List();         // default list
+    defaultList.title = "Default";
+    defaultList.description = "Create todo items in here";
+    defaultList.selected = true;
+    allToDoLists.currentList = defaultList;
+    allToDoLists.addList(defaultList);
+    console.log('Created default data.');
+}
+
 // list.id & item.id are unique keys
 // also need to save item counter and list counter so that the keys arent
 // generated twice
@@ -325,20 +338,32 @@ export function saveData() {
 
     if (storageAvailable('localStorage')) {
 
+        // This is not good if it crashes after this then the user loses all
         wipeLocalStorage();
 
-        localStorage.setItem('tdLCounter', JSON.stringify(toDoList.listCounter));
-        localStorage.setItem('tdICounter', JSON.stringify(Mob.Counter.currentValue()));
-        localStorage.setItem('tdLCurrent', JSON.stringify(toDoList.currentList.id));
+        save('tdLCounter', JSON.stringify(toDoList.listCounter));
+        save('tdICounter', JSON.stringify(Mob.Counter.currentValue()));
+        save('tdLCurrent', JSON.stringify(toDoList.currentList.id));
+
+        console.log(`
+            Updated tdLCounter ${toDoList.listCounter}, 
+            tdICounter ${Mob.Counter.currentValue()}, 
+            tdLCurrent ${toDoList.currentList.id}`);
 
         toDoList.lists.forEach(list => {
-            localStorage.setItem(list.id, JSON.stringify(list));
+            save(list.id, JSON.stringify(list));
         });
     }
     else {
         console.log('localStorage is not available');
     }
 }
+
+function save(key, value) {
+    localStorage.setItem(key, value);
+}
+
+// Only removes the lists (todolist_[num] etc)
 
 export function wipeLocalStorage() {
 
