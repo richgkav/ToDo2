@@ -52,7 +52,7 @@ export function getDiv(idName) {
 }
 
 export function newH2(text) {
-    const newH2 = document.createElement('H2');
+    const newH2 = document.createElement('H3');
     if (text) newH2.innerHTML = text;
     return newH2;
 }
@@ -134,6 +134,10 @@ export function renderListsFunctions() {
     const newDivDelList = newDiv(null, 'Delete List');
     listsFunctions.appendChild(newDivDelList);
     App.deleteListClickEvent(newDivDelList);
+
+    const newDivRenList = newDiv(null, 'Rename List');
+    listsFunctions.appendChild(newDivRenList);
+    App.renameListClickEvent(newDivRenList);
 }
 
 export function renderItemsFunctions() {

@@ -137,6 +137,14 @@ export function addNewListClickEvent(newDiv) {
     });
 }
 
+export function renameListClickEvent(newDiv) {
+    newDiv.addEventListener('click', function() {
+        const newName = window.prompt('Enter name of list', toDoList.currentList.title);
+        toDoList.currentList.title = newName;
+        displayLists();
+    });
+}
+
 export function deleteListClickEvent(newDiv) {
 
     newDiv.addEventListener('click', function() {
